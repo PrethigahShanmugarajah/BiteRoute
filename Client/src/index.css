@@ -1,0 +1,22 @@
+/* BiteRoute / Client / src / index.css */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
+@import "tailwindcss";
+
+* {
+  font-family: "Instrument Serif", serif;
+}
+
+@theme {
+  --color-primary: #5b21b6;
+  --color-hover: #7c3aed;
+  --color-bg: #f5f3ff;
+  --color-border: #d8b4fe;
+}
+
+:root {
+  --primary: #5b21b6;
+  --hover: #7c3aed;
+  --bg: #f5f3ff;
+  --border: #d8b4fe;
+}
