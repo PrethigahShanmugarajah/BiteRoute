@@ -2,11 +2,13 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import connectDB from "./config/db.js";
 
 /* -------- INITIALIZE EXPRESS -------- */
 const app = express();
 
 /* -------- CONNECT TO DATABASE -------- */
+await connectDB();
 
 /* -------- MIDDLEWARE CONFIGURATION -------- */
 app.use(express.json());
