@@ -24,3 +24,7 @@
 button {
   cursor: pointer;
 }
+
+.Toastify__toast {
+  font-family: "Inria Serif", serif;
+}
