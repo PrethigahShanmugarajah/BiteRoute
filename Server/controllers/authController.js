@@ -124,3 +124,22 @@ export const signIn = async (req, res) => {
     });
   }
 };
+
+/* -------- SignOut -------- */
+export const signOut = async (req, res) => {
+  try {
+    res.clearCookie("token");
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Signout successfully!" });
+  } catch (error) {
+    console.error("SignOut Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to SignOut",
+      error: `SignOut Error: ${error.message}`,
+    });
+  }
+};
