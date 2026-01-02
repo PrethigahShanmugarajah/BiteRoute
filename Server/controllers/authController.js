@@ -55,13 +55,12 @@ export const signUp = async (req, res) => {
       updatedAt: user.updatedAt,
     };
 
-    return res
-      .status(201)
-      .json({
-        success: true,
-        message: "SignUp successfully!",
-        user: responseUser,
-      });
+    return res.status(201).json({
+      success: true,
+      token,
+      message: "SignUp successfully!",
+      user: responseUser,
+    });
   } catch (error) {
     console.error("SignUp Error:", error.message);
 
@@ -69,6 +68,59 @@ export const signUp = async (req, res) => {
       success: false,
       message: "Failed to SignUp",
       error: `SignUp Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- SignIn -------- */
+export const signIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password." });
+    }
+
+    const token = await genToken(user._id);
+
+    res.cookie("token", token, {
+      secure: false,
+      sameSite: "strict",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    const responseUser = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      password: user.password,
+      mobile: user.mobile,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+
+    return res.status(200).json({
+      success: true,
+      token,
+      message: "SignIn successfully!",
+      user: responseUser,
+    });
+  } catch (error) {
+    console.error("SignIn Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to SignIn",
+      error: `SignIn Error: ${error.message}`,
     });
   }
 };
