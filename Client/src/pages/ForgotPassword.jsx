@@ -9,6 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
@@ -18,6 +19,7 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -33,6 +35,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const handleSendOtp = async (formData) => {
+    setLoading(true);
     try {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_SEND_OTP,
@@ -46,6 +49,7 @@ const ForgotPassword = () => {
         toast.success(data.message);
         console.log("Send OTP Success:", data.message);
         setStep(2);
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Send OTP Data Error:", data.message);
@@ -53,10 +57,12 @@ const ForgotPassword = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Send OTP Error:", error);
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async (formData) => {
+    setLoading(true);
     try {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_VERIFY_OTP,
@@ -70,6 +76,7 @@ const ForgotPassword = () => {
         toast.success(data.message);
         console.log("Verify OTP Success:", data.message);
         setStep(3);
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Verify OTP Data Error:", data.message);
@@ -77,6 +84,7 @@ const ForgotPassword = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Verify OTP Error:", error);
+      setLoading(false);
     }
   };
 
@@ -84,6 +92,8 @@ const ForgotPassword = () => {
     if (newPassword != confirmPassword) {
       return null;
     }
+
+    setLoading(true);
 
     try {
       const { data } = await api.post(
@@ -98,6 +108,7 @@ const ForgotPassword = () => {
         toast.success(data.message);
         console.log("Reset Password Success:", data.message);
         navigate("/signin");
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Reset Password Data Error:", data.message);
@@ -105,6 +116,7 @@ const ForgotPassword = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Reset Password Error:", error);
+      setLoading(false);
     }
   };
 
@@ -158,15 +170,17 @@ const ForgotPassword = () => {
             {/* <button
               className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
               onClick={handleSendOtp}
+              disabled={loading}
             >
-              Send Otp
+              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Send Otp"}
             </button> */}
 
             <Button
               className="w-full font-semibold"
               onClick={() => handleSubmit(handleSendOtp)()}
+              disabled={loading}
             >
-              Send Otp
+              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Send Otp"}
             </Button>
           </div>
         )}
@@ -206,15 +220,17 @@ const ForgotPassword = () => {
             {/* <button
               className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
               onClick={handleVerifyOtp}
+              disabled={loading}
             >
-              Verify
+              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Verify"}
             </button> */}
 
             <Button
               className="w-full font-semibold"
               onClick={() => handleSubmit(handleVerifyOtp)()}
+              disabled={loading}
             >
-              Verify
+              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Verify"}
             </Button>
           </div>
         )}
@@ -335,15 +351,26 @@ const ForgotPassword = () => {
             {/* <button
               className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
               onClick={handleResetPassword}
+              disabled={loading}
             >
-              Reset Password
+              {loading ? (
+                <ClipLoader size={20} color="#FFFFFF" />
+              ) : (
+                "Reset Password"
+              )}
             </button> */}
 
             <Button
               className="w-full font-semibold"
               onClick={() => handleSubmit(handleResetPassword)()}
+              disabled={loading}
             >
-              Reset Password
+              {loading ? (
+                <ClipLoader size={20} color="#FFFFFF" />
+              ) : (
+                "Reset Password"
+              )}
+              {/* Reset Password */}
             </Button>
           </div>
         )}
