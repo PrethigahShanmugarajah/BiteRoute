@@ -13,17 +13,17 @@ import { toast } from "react-toastify";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase";
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("user");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mobile, setMobile] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const {
     control,
@@ -54,9 +54,13 @@ const SignUp = () => {
       if (data.success) {
         toast.success(data.message);
         console.log("Sign Up Success:", data.message);
+
         reset();
-        setRole("user");
-        setLoading(false);
+        dispatch(setUserData(data.user));
+
+        dispatch(setUserData(data.user));
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        console.log("SignUp Dispatch:", data.user);
       } else {
         toast.warn(data.message);
         console.log("Sign Up Data Error:", data.message);
@@ -97,7 +101,10 @@ const SignUp = () => {
       if (data.success) {
         toast.success(data.message);
         console.log("Google Auth Success:", data.message);
-        reset();
+
+        dispatch(setUserData(data.user));
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        console.log("Google SignUp Dispatch:", data.user);
       } else {
         toast.warn(data.message);
         console.log("Google Auth Data Error:", data.message);
@@ -117,23 +124,6 @@ const SignUp = () => {
         </p>
 
         {/* -------- Full Name -------- */}
-        {/* <div className="mb-4">
-          <label
-            htmlFor="fullName"
-            className="block text-black font-medium mb-1"
-          >
-            Full Name
-          </label>
-
-          <input
-            type="text"
-            className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-            placeholder="Full Name"
-            onChange={(e) => setFullName(e.target.value)}
-            value={fullName}
-          />
-        </div> */}
-
         <div>
           <Input
             name="fullName"
@@ -146,20 +136,6 @@ const SignUp = () => {
         </div>
 
         {/* -------- Email -------- */}
-        {/* <div className="mb-4">
-          <label htmlFor="email" className="block text-black font-medium mb-1">
-            Email
-          </label>
-
-          <input
-            type="email"
-            className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-            placeholder="example@example.com"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-        </div> */}
-
         <div>
           <Input
             name="email"
@@ -173,20 +149,6 @@ const SignUp = () => {
         </div>
 
         {/* -------- Mobile -------- */}
-        {/* <div className="mb-4">
-          <label htmlFor="mobile" className="block text-black font-medium mb-1">
-            Mobile
-          </label>
-
-          <input
-            type="number"
-            className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-            placeholder="0 12 345 6789"
-            onChange={(e) => setMobile(e.target.value)}
-            value={mobile}
-          />
-        </div> */}
-
         <div className="mb-4">
           <Input
             name="mobile"
@@ -200,29 +162,6 @@ const SignUp = () => {
         </div>
 
         {/* -------- Password -------- */}
-        {/* <div className="mb-4">
-          <label htmlFor="mobile" className="block text-black font-medium mb-1">
-            Password
-          </label>
-
-          <div className="relative">
-            <input
-              type="password"
-              className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-
-            <button
-              className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {!showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
-            </button>
-          </div>
-        </div> */}
-
         <div>
           <div className="relative">
             <Input
@@ -252,22 +191,6 @@ const SignUp = () => {
             Role
           </label>
 
-          {/* <div className="flex gap-2">
-            {["user", "owner", "deliveryBoy"].map((r) => (
-              <button
-                key={r}
-                onClick={() => setRole(r)}
-                className={`flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors ${
-                  role === r
-                    ? "ring-1 ring-hover bg-primary text-white"
-                    : "text-primary"
-                }`}
-              >
-                {capitalizeFirstLetter(r)}
-              </button>
-            ))}
-          </div> */}
-
           <div className="flex gap-2">
             {["user", "owner", "deliveryBoy"].map((r) => (
               <Button
@@ -284,31 +207,13 @@ const SignUp = () => {
           </div>
         </div>
 
-        {/* <button
-          className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
-          onClick={handleSignUp}
-          disabled={loading}
-        >
-          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign Up"}
-          Sign Up
-        </button> */}
-
         <Button
           className="w-full font-semibold"
           onClick={() => handleSubmit(handleSignUp)()}
           disabled={loading}
         >
           {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign Up"}
-          {/* Sign Up */}
         </Button>
-
-        {/* <button
-          className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-300 hover:bg-gray-100"
-          onClick={handleGoogleAuth}
-        >
-          <FcGoogle size={20} />
-          <span>Sign up with Google</span>
-        </button> */}
 
         <Button
           className="w-full mt-4"
