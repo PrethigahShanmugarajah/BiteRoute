@@ -8,6 +8,7 @@ const API_ROUTES = {
     AUTH_SIGNOUT: `${BASE_URL}/api/auth/signout`,
     AUTH_SEND_OTP: `${BASE_URL}/api/auth/send-otp`,
     AUTH_VERIFY_OTP: `${BASE_URL}/api/auth/verify-otp`,
+    AUTH_RESET_PASSWORD: `${BASE_URL}/api/auth/reset-password`,
   },
 };
 
