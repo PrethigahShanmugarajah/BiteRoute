@@ -12,6 +12,7 @@ import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase";
+import { ClipLoader } from "react-spinners";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mobile, setMobile] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,13 +41,11 @@ const SignUp = () => {
   });
 
   const handleSignUp = async (formData) => {
+    setLoading(true);
     try {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_SIGNUP,
-        {
-          ...formData,
-          role,
-        },
+        { ...formData, role },
         { withCredentials: true }
       );
 
@@ -56,6 +56,7 @@ const SignUp = () => {
         console.log("Sign Up Success:", data.message);
         reset();
         setRole("user");
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Sign Up Data Error:", data.message);
@@ -63,6 +64,7 @@ const SignUp = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Signup Error:", error);
+      setLoading(false);
     }
   };
 
@@ -285,15 +287,19 @@ const SignUp = () => {
         {/* <button
           className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
           onClick={handleSignUp}
+          disabled={loading}
         >
+          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign Up"}
           Sign Up
         </button> */}
 
         <Button
           className="w-full font-semibold"
           onClick={() => handleSubmit(handleSignUp)()}
+          disabled={loading}
         >
-          Sign Up
+          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign Up"}
+          {/* Sign Up */}
         </Button>
 
         {/* <button
