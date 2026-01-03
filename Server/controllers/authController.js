@@ -2,6 +2,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { genToken } from "../utils/token.js";
+import { sendOtpMail } from "../utils/mail.js";
 
 /* -------- SignUp -------- */
 export const signUp = async (req, res) => {
@@ -10,19 +11,23 @@ export const signUp = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: "User already exists." });
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists." });
     }
 
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 8 characters." });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters.",
+      });
     }
 
     if (mobile.length < 10) {
-      return res
-        .status(400)
-        .json({ message: "Mobile number must be at least 10 digits." });
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be at least 10 digits.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -79,13 +84,17 @@ export const signIn = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "User does not exist." });
+      return res
+        .status(400)
+        .json({ success: false, message: "User does not exist." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Incorrect password." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect password." });
     }
 
     const token = await genToken(user._id);
@@ -140,6 +149,40 @@ export const signOut = async (req, res) => {
       success: false,
       message: "Failed to SignOut",
       error: `SignOut Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Send OTP -------- */
+export const sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User does not exist." });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    user.resetOtp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
+    user.isOtpVerified = false;
+
+    await user.save();
+    await sendOtpMail(email, otp);
+
+    return res
+      .status(200)
+      .json({ success: true, message: "OTP sent successfully!" });
+  } catch (error) {
+    console.error("Send OTP Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Send OTP",
+      error: `Send OTP Error: ${error.message}`,
     });
   }
 };
