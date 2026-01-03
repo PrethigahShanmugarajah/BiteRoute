@@ -12,14 +12,16 @@ import { toast } from "react-toastify";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase";
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const {
     control,
@@ -49,6 +51,11 @@ const SignIn = () => {
       if (data.success) {
         toast.success(data.message);
         console.log("Signin Success:", data.message);
+
+        dispatch(setUserData(data.user));
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        console.log("SignIn Dispatch:", data.user);
+
         reset();
         setLoading(false);
       } else {
@@ -81,7 +88,12 @@ const SignIn = () => {
       if (data.success) {
         toast.success(data.message);
         console.log("Google Auth Success:", data.message);
+
         reset();
+
+        dispatch(setUserData(data.user));
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        console.log("Google SignIn Dispatch:", data);
       } else {
         toast.warn(data.message);
         console.log("Google Auth Data Error:", data.message);
@@ -101,20 +113,6 @@ const SignIn = () => {
         </p>
 
         {/* -------- Email -------- */}
-        {/* <div className="mb-4">
-          <label htmlFor="email" className="block text-black font-medium mb-1">
-            Email
-          </label>
-
-          <input
-            type="email"
-            className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-            placeholder="example@example.com"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-        </div> */}
-
         <div>
           <Input
             name="email"
@@ -128,29 +126,6 @@ const SignIn = () => {
         </div>
 
         {/* -------- Password -------- */}
-        {/* <div className="mb-4">
-          <label htmlFor="mobile" className="block text-black font-medium mb-1">
-            Password
-          </label>
-
-          <div className="relative">
-            <input
-              type="password"
-              className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-
-            <button
-              className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {!showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
-            </button>
-          </div>
-        </div> */}
-
         <div>
           <div className="relative">
             <Input
@@ -179,15 +154,6 @@ const SignIn = () => {
           Forgot Password
         </div>
 
-        {/* <button
-          className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
-          onClick={handleSignIn}
-          disabled={loading}
-        >
-          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign In"}
-          Sign In
-        </button> */}
-
         <Button
           className="w-full font-semibold"
           onClick={() => handleSubmit(handleSignIn)()}
@@ -195,14 +161,6 @@ const SignIn = () => {
         >
           {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign In"}
         </Button>
-
-        {/* <button
-          className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-300 hover:bg-gray-100"
-          onClick={handleGoogleAuth}
-        >
-          <FcGoogle size={20} />
-          <span>Sign up with Google</span>
-        </button> */}
 
         <Button
           className="w-full mt-4"
