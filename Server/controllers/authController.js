@@ -229,3 +229,38 @@ export const verifyOtp = async (req, res) => {
     });
   }
 };
+
+/* -------- Reset Password -------- */
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || !user.isOtpVerified) {
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP verification required." });
+    }
+
+    const oldPassword = user.password;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.isOtpVerified = false;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully!",
+      oldPassword,
+      newPassword: hashedPassword,
+    });
+  } catch (error) {
+    console.error("Reset Password Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Reset Password",
+      error: `Reset Password Error: ${error.message}`,
+    });
+  }
+};
