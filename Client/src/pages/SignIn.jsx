@@ -11,11 +11,13 @@ import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase";
+import { ClipLoader } from "react-spinners";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,6 +34,7 @@ const SignIn = () => {
   });
 
   const handleSignIn = async (formData) => {
+    setLoading(true);
     try {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_SIGNIN,
@@ -47,6 +50,7 @@ const SignIn = () => {
         toast.success(data.message);
         console.log("Signin Success:", data.message);
         reset();
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Signin Data Error:", data.message);
@@ -54,6 +58,7 @@ const SignIn = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Signin Error:", error);
+      setLoading(false);
     }
   };
 
@@ -177,15 +182,18 @@ const SignIn = () => {
         {/* <button
           className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
           onClick={handleSignIn}
+          disabled={loading}
         >
-          Sign Up
+          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign In"}
+          Sign In
         </button> */}
 
         <Button
           className="w-full font-semibold"
           onClick={() => handleSubmit(handleSignIn)()}
+          disabled={loading}
         >
-          Sign In
+          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Sign In"}
         </Button>
 
         {/* <button
