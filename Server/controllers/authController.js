@@ -264,3 +264,50 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
+
+/* -------- Google Authentication -------- */
+export const googleAuth = async (req, res) => {
+  try {
+    const { fullName, email, mobile, role } = req.body;
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({ fullName, email, mobile, role });
+    }
+
+    const token = await genToken(user._id);
+
+    res.cookie("token", token, {
+      secure: false,
+      sameSite: "strict",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    const responseUser = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      password: user.password,
+      mobile: user.mobile,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+
+    return res.status(200).json({
+      success: true,
+      token,
+      message: "Signed in with Google successfully!",
+      user: responseUser,
+    });
+  } catch (error) {
+    console.error("Google Authentication Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Google authentication failed.",
+      error: `Google Authentication Error: ${error.message}`,
+    });
+  }
+};
