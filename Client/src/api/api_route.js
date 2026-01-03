@@ -11,6 +11,9 @@ const API_ROUTES = {
     AUTH_RESET_PASSWORD: `${BASE_URL}/api/auth/reset-password`,
     AUTH_GOOGLE_AUTH: `${BASE_URL}/api/auth/google-auth`,
   },
+  USER: {
+    USER_GET: `${BASE_URL}/api/user/userget`,
+  },
 };
 
 export default API_ROUTES;
