@@ -9,6 +9,8 @@ import { FcGoogle } from "react-icons/fc";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -52,6 +54,36 @@ const SignIn = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Signin Error:", error);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const googleData = await signInWithPopup(auth, provider);
+      console.log("Google Auth popup result:", googleData);
+
+      const { data } = await api.post(
+        API_ROUTES.AUTH.AUTH_GOOGLE_AUTH,
+        {
+          email: googleData.user.email,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Google Auth Response:", data);
+
+      if (data.success) {
+        toast.success(data.message);
+        console.log("Google Auth Success:", data.message);
+        reset();
+      } else {
+        toast.warn(data.message);
+        console.log("Google Auth Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Google Auth Error:", error);
     }
   };
 
@@ -156,12 +188,19 @@ const SignIn = () => {
           Sign In
         </Button>
 
-        {/* <button className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-300 hover:bg-gray-100">
+        {/* <button
+          className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-300 hover:bg-gray-100"
+          onClick={handleGoogleAuth}
+        >
           <FcGoogle size={20} />
           <span>Sign up with Google</span>
         </button> */}
 
-        <Button className="w-full mt-4" variant="secondary">
+        <Button
+          className="w-full mt-4"
+          variant="secondary"
+          onClick={handleGoogleAuth}
+        >
           <FcGoogle size={20} />
           <span>Sign in with Google</span>
         </Button>
