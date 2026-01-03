@@ -175,7 +175,7 @@ export const sendOtp = async (req, res) => {
 
     return res
       .status(200)
-      .json({ success: true, message: "OTP sent successfully!" });
+      .json({ success: true, message: "OTP sent successfully!", otp });
   } catch (error) {
     console.error("Send OTP Error:", error.message);
 
@@ -183,6 +183,49 @@ export const sendOtp = async (req, res) => {
       success: false,
       message: "Failed to Send OTP",
       error: `Send OTP Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Verify OTP -------- */
+export const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User does not exist." });
+    }
+
+    // if (!user || user.resetOtp != otp || user.otpExpires < Date.now()) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Invalid or expired OTP." });
+    // }
+
+    if (user.resetOtp !== otp.trim() || user.otpExpires < Date.now()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid or expired OTP." });
+    }
+
+    user.isOtpVerified = true;
+    user.resetOtp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "OTP verified successfully!" });
+  } catch (error) {
+    console.error("Verify OTP Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Verify OTP",
+      error: `Verify OTP Error: ${error.message}`,
     });
   }
 };
