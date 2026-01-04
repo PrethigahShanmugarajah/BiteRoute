@@ -20,9 +20,9 @@ function useGetMyShop() {
 
         if (data.success) {
           console.log("Fetch Shop Success:", data.message);
-          dispatch(setMyShopData(data.user));
+          dispatch(setMyShopData(data.shop));
 
-          console.log("Dispatch Shop:", data.user);
+          console.log("Dispatch Shop:", data.shop);
         } else {
           toast.error(data.message);
           console.log("Fetch Shop Data Error:", error.message);
