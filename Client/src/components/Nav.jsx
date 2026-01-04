@@ -1,5 +1,5 @@
 // BiteRoute / Client / src / components / Nav.jsx
-import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot, FaPlus } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";
 import Button from "./Button";
@@ -11,6 +11,7 @@ import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
 import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
 import { setUserData } from "../redux/userSlice";
+import { TbReceipt2 } from "react-icons/tb";
 
 const Nav = () => {
   const { userData, city } = useSelector((state) => state.user);
@@ -42,8 +43,8 @@ const Nav = () => {
 
   return (
     <div className="w-full h-45 flex items-center justify-between md:justify-center gap-7.5 px-5 fixed top-0 z-9999 bg-bg overflow-visible">
-      {showSearch && (
-        <div className="w-[90%] h-17.5 bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-30 left-[5%]">
+      {showSearch && userData.role == "user" && (
+        <div className="w-[90%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-30 left-[5%]">
           <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
             <FaLocationDot size={25} className="text-primary" />
             <div className="w-[80%] truncate text-gray-500">{city}</div>
@@ -62,48 +63,89 @@ const Nav = () => {
 
       <h1 className="text-3xl font-bold mb-2 text-primary">BiteRoute</h1>
 
-      <div className="md-w-[60%] lg:w-[40%] h-17.5 bg-white shadow-xl rounded-lg items-center gap-5 hidden md:flex">
-        <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
-          <FaLocationDot size={25} className="text-primary" />
-          <div className="w-[80%] truncate text-gray-500">{city}</div>
-        </div>
+      {userData.role == "user" && (
+        <div className="md-w-[60%] lg:w-[40%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 hidden md:flex">
+          <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
+            <FaLocationDot size={25} className="text-primary" />
+            <div className="w-[80%] truncate text-gray-500">{city}</div>
+          </div>
 
-        <div className="w-[80%] flex items-center gap-2.5">
-          <IoIosSearch size={25} className="text-primary" />
-          <input
-            type="text"
-            placeholder="Search delicious food..."
-            className="px-2.5 placeholder-gray-400 outline-0 w-full"
-          />
+          <div className="w-[80%] flex items-center gap-2.5">
+            <IoIosSearch size={25} className="text-primary" />
+            <input
+              type="text"
+              placeholder="Search delicious food..."
+              className="px-2.5 placeholder-gray-400 outline-0 w-full"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex items-center gap-4">
-        {showSearch ? (
-          <RxCross2
-            size={25}
-            className="text-primary md:hidden"
-            onClick={() => setShowSearch(false)}
-          />
+        {userData.role == "user" &&
+          (showSearch ? (
+            <RxCross2
+              size={25}
+              className="text-primary md:hidden cursor-pointer"
+              onClick={() => setShowSearch(false)}
+            />
+          ) : (
+            <IoIosSearch
+              size={25}
+              className="text-primary md:hidden cursor-pointer"
+              onClick={() => setShowSearch(true)}
+            />
+          ))}
+
+        {userData.role == "owner" ? (
+          <>
+            <Button
+              className="hidden md:flex items-center bg-primary/20 text-primary hover:bg-primary/30 p-2!"
+              variant="custom"
+            >
+              <FaPlus size={20} />
+              <span>Add Food Item</span>
+            </Button>
+
+            <Button
+              className="md:hidden flex items-center p-2! bg-primary/20 text-primary hover:bg-primary/30"
+              variant="custom"
+            >
+              <FaPlus size={20} />
+            </Button>
+
+            <div className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
+              <TbReceipt2 size={20} />
+              <span>My Orders</span>
+              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+                0
+              </span>
+            </div>
+
+            <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
+              <TbReceipt2 size={20} />
+              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+                0
+              </span>
+            </div>
+          </>
         ) : (
-          <IoIosSearch
-            size={25}
-            className="text-primary md:hidden"
-            onClick={() => setShowSearch(true)}
-          />
+          <>
+            <div className="relative cursor-pointer">
+              <FiShoppingCart size={25} className="text-primary" />
+              <span className="absolute -right-2.25 -top-3 text-primary">
+                0
+              </span>
+            </div>
+
+            <Button
+              className="hidden md:block px-3! py-1! bg-primary/20 text-primary hover:bg-primary/30"
+              variant="custom"
+            >
+              My Orders
+            </Button>
+          </>
         )}
-
-        <div className="relative cursor-pointer">
-          <FiShoppingCart size={25} className="text-primary" />
-          <span className="absolute -right-2.25 -top-3 text-primary">0</span>
-        </div>
-
-        <Button
-          className="hidden md:block px-3! py-1! bg-primary/20 text-primary hover:bg-primary/30"
-          variant="custom"
-        >
-          My Orders
-        </Button>
 
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-white text-4.5 shadow-xl font-semibold cursor-pointer"
