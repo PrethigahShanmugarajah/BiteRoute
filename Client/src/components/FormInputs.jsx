@@ -1,4 +1,4 @@
-// src / components / FormInputs.jsx
+// Client / src / components / FormInputs.jsx
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 
@@ -105,6 +105,7 @@ export const FileInput = ({
   control,
   required = false,
   errors,
+  onChange,
 }) => {
   return (
     <div className="mb-4">
@@ -117,7 +118,11 @@ export const FileInput = ({
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => field.onChange(e.target.files[0])}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              field.onChange(file);
+              if (onChange && file) onChange(file);
+            }}
             className="mt-1 p-2 block w-full border border-gray-300 rounded-md cursor-pointer hover:border-gray-400"
           />
         )}
