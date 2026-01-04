@@ -34,3 +34,7 @@ button {
   color: #000000;
   opacity: 1;
 }
+
+*::-webkit-scrollbar {
+  display: none;
+}
