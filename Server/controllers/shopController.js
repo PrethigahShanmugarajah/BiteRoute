@@ -59,3 +59,31 @@ export const createEditShop = async (req, res) => {
     });
   }
 };
+
+/* -------- Get My Shop -------- */
+export const getMyShop = async (req, res) => {
+  try {
+    const shop = await Shop.findOne({ owner: req.userId });
+
+    if (!shop) {
+      return res.status(404).json({
+        success: false,
+        message: "Shop not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Shop fetched successfully!",
+      shop,
+    });
+  } catch (error) {
+    console.error("Get My Shop Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch shop",
+      error: `Get My Shop Error: ${error.message}`,
+    });
+  }
+};
