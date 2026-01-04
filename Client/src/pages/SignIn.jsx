@@ -53,7 +53,6 @@ const SignIn = () => {
         console.log("Signin Success:", data.message);
 
         dispatch(setUserData(data.user));
-        localStorage.setItem("userData", JSON.stringify(data.user));
         console.log("SignIn Dispatch:", data.user);
 
         reset();
@@ -92,7 +91,6 @@ const SignIn = () => {
         reset();
 
         dispatch(setUserData(data.user));
-        localStorage.setItem("userData", JSON.stringify(data.user));
         console.log("Google SignIn Dispatch:", data);
       } else {
         toast.warn(data.message);
