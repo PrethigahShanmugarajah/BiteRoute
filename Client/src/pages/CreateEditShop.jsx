@@ -141,7 +141,7 @@ const CreateEditShop = () => {
         />
       </div>
 
-      <div className="max-w-lg w-full bg-white shadow-2xl rounded-2xl p-8 border border-gray-300">
+      <div className="max-w-lg w-full bg-white shadow-2xl rounded-2xl p-8 border border-gray-300 max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col items-center mb-6">
           <div className="bg-primary/10 p-4 rounded-full mb-4">
             <FaUtensils className="text-primary w-16 h-16" />
