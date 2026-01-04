@@ -55,9 +55,9 @@ const Nav = () => {
   };
 
   return (
-    <div className="w-full h-45 flex items-center justify-between md:justify-center gap-7.5 px-5 fixed top-0 z-9999 bg-bg overflow-visible">
+    <div className="w-full h-20 flex items-center justify-between md:justify-center gap-7.5 px-5 fixed top-0 z-9999 bg-bg overflow-visible">
       {showSearch && userData.role == "user" && (
-        <div className="w-[90%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-30 left-[5%]">
+        <div className="w-[90%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-30 left-[5%] -mt-5">
           <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
             <FaLocationDot size={25} className="text-primary" />
             <div className="w-[80%] truncate text-gray-500">{currentCity}</div>
@@ -200,8 +200,24 @@ const Nav = () => {
           {capitalizeFirstLetter(userData?.fullName.slice(0, 1))}
         </div>
 
-        {showInfo && (
-          <div className="fixed top-28 right-2.5 md:right-[10%] lg:right-[10%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999">
+        {showInfo && userData.role == "user" && (
+          <div className="fixed top-28 right-2.5 md:right-[10%] lg:right-[10%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12">
+            <div className="text-[17px]">
+              {capitalizeWords(userData?.fullName)}
+            </div>
+
+            <div className="md:hidden text-primary cursor-pointer">
+              My Orders
+            </div>
+
+            <div className="text-primary cursor-pointer" onClick={handleLogout}>
+              Logout
+            </div>
+          </div>
+        )}
+
+        {showInfo && userData.role == "owner" && (
+          <div className="fixed top-28 right-2.5 md:right-[10%] lg:right-[24%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12">
             <div className="text-[17px]">
               {capitalizeWords(userData?.fullName)}
             </div>
