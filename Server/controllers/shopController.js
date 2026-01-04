@@ -7,7 +7,7 @@ export const createEditShop = async (req, res) => {
   let isNewShop = false;
 
   try {
-    const { name, district, province, address } = req.body;
+    const { name, city, state, address } = req.body;
 
     let image;
     if (req.file) {
@@ -20,15 +20,15 @@ export const createEditShop = async (req, res) => {
       isNewShop = true;
       shop = await Shop.create({
         name,
-        district,
-        province,
+        city,
+        state,
         address,
         image,
         owner: req.userId,
       });
       isNewShop = true;
     } else {
-      let updateData = { name, district, province, address, owner: req.userId };
+      let updateData = { name, city, state, address, owner: req.userId };
       if (image) updateData.image = image;
 
       shop = await Shop.findByIdAndUpdate(shop._id, updateData, { new: true });
