@@ -1,4 +1,4 @@
-// Client / src / components / FormInputs.jsx
+// Bite Route / Client / src / components / FormInputs.jsx
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 
@@ -11,10 +11,17 @@ export const Input = ({
   required = false,
   errors,
   className = "",
+  noFocusRing = false,
 }) => {
+  const focusClasses = noFocusRing
+    ? ""
+    : "focus:ring-1 focus:ring-primary/50 focus:outline-none";
+
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-black">{label}</label>
+      {label && (
+        <label className="block text-sm font-medium text-black">{label}</label>
+      )}
       <Controller
         name={name}
         control={control}
@@ -24,14 +31,14 @@ export const Input = ({
             <textarea
               {...field}
               placeholder={placeholder}
-              className={`mt-1 p-2 block w-full border border-gray-300 rounded-md placeholder-gray-400 focus:ring-1 focus:ring-primary/50 focus:outline-none resize-none ${className}`}
+              className={`mt-1 p-2 block w-full border border-gray-300 rounded-md placeholder-gray-400 resize-none ${focusClasses} ${className}`}
             />
           ) : (
             <input
               {...field}
               type={type}
               placeholder={placeholder}
-              className={`mt-1 p-2 block w-full border border-gray-300 rounded-md placeholder-gray-400 focus:ring-1 focus:ring-primary/50 focus:outline-none ${className}`}
+              className={`mt-1 p-2 block w-full border border-gray-300 rounded-md placeholder-gray-400 ${focusClasses} ${className}`}
             />
           )
         }
