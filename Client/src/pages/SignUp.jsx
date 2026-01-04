@@ -56,10 +56,8 @@ const SignUp = () => {
         console.log("Sign Up Success:", data.message);
 
         reset();
-        dispatch(setUserData(data.user));
 
         dispatch(setUserData(data.user));
-        localStorage.setItem("userData", JSON.stringify(data.user));
         console.log("SignUp Dispatch:", data.user);
       } else {
         toast.warn(data.message);
@@ -103,7 +101,6 @@ const SignUp = () => {
         console.log("Google Auth Success:", data.message);
 
         dispatch(setUserData(data.user));
-        localStorage.setItem("userData", JSON.stringify(data.user));
         console.log("Google SignUp Dispatch:", data.user);
       } else {
         toast.warn(data.message);
@@ -192,7 +189,7 @@ const SignUp = () => {
           </label>
 
           <div className="flex gap-2">
-            {["user", "owner", "deliveryBoy"].map((r) => (
+            {["user", "owner", "deliveryPerson"].map((r) => (
               <Button
                 key={r}
                 onClick={() => setRole(r)}
