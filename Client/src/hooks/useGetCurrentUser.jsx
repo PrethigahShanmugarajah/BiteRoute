@@ -18,7 +18,9 @@ function useGetCurrentUser() {
         console.log("Fetch User API Response:", data);
         if (data.success) {
           console.log("Fetch User Success:", data.message);
+
           dispatch(setUserData(data.user));
+          console.log("Dispatch User:", data.user);
         } else {
           toast.error(data.message);
           console.log("Fetch User Data Error:", error);
