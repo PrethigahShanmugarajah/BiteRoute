@@ -1,4 +1,4 @@
-// src / components / Button.jsx
+// BiteRoute / Client / src / components / Button.jsx
 const Button = ({
   text,
   children,
@@ -11,10 +11,12 @@ const Button = ({
   loading = false,
   href = null,
   size = "md",
+  customClass = "",
 }) => {
   const variants = {
     primary: "bg-primary text-white border border-primary",
     secondary: "bg-white text-black border border-gray-300",
+    custom: "",
   };
 
   const sizes = {
@@ -25,6 +27,7 @@ const Button = ({
 
   const hoverClasses =
     !noHover &&
+    variant !== "custom" &&
     (variant === "primary"
       ? "hover:bg-hover hover:border-none"
       : "hover:bg-gray-50");
@@ -36,6 +39,7 @@ const Button = ({
     ${variants[variant]}
     ${sizes[size]}
     ${hoverClasses}
+    ${customClass}
     ${disabled || loading ? "opacity-50 cursor-not-allowed" : ""}
     ${className}
   `;
