@@ -32,8 +32,12 @@ const Button = ({
       ? "hover:bg-hover hover:border-none"
       : "hover:bg-gray-50");
 
+  // Check if user already passed a display class
+  const hasDisplayClass = /(flex|inline-flex|block|hidden)/.test(className);
+
   const baseClasses = `
-    inline-flex items-center justify-center gap-2
+    ${hasDisplayClass ? "" : "inline-flex"} 
+    items-center justify-center gap-2
     rounded-md transition-all
     cursor-pointer hover:rounded-full
     ${variants[variant]}
