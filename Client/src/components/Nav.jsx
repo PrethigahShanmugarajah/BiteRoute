@@ -14,7 +14,7 @@ import { setUserData } from "../redux/userSlice";
 import { TbReceipt2 } from "react-icons/tb";
 
 const Nav = () => {
-  const { userData, city } = useSelector((state) => state.user);
+  const { userData, currentCity } = useSelector((state) => state.user);
   const { myShopData } = useSelector((state) => state.owner);
 
   const [showInfo, setShowInfo] = useState(false);
@@ -49,7 +49,7 @@ const Nav = () => {
         <div className="w-[90%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-30 left-[5%]">
           <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
             <FaLocationDot size={25} className="text-primary" />
-            <div className="w-[80%] truncate text-gray-500">{city}</div>
+            <div className="w-[80%] truncate text-gray-500">{currentCity}</div>
           </div>
 
           <div className="w-[80%] flex items-center gap-2.5">
@@ -69,7 +69,7 @@ const Nav = () => {
         <div className="md-w-[60%] lg:w-[40%] h-12 bg-white shadow-xl rounded-lg items-center gap-5 hidden md:flex">
           <div className="flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-300">
             <FaLocationDot size={25} className="text-primary" />
-            <div className="w-[80%] truncate text-gray-500">{city}</div>
+            <div className="w-[80%] truncate text-gray-500">{currentCity}</div>
           </div>
 
           <div className="w-[80%] flex items-center gap-2.5">
