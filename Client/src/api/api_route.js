@@ -17,6 +17,9 @@ const API_ROUTES = {
   SHOP: {
     SHOP_CREATE_EDIT: `${BASE_URL}/api/shop/create-edit`,
   },
+  ITEM: {
+    ITEM_ADD: `${BASE_URL}/api/item/add-item`,
+  },
 };
 
 export default API_ROUTES;
