@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
 import { setUserData } from "../redux/userSlice";
 import { TbReceipt2 } from "react-icons/tb";
+import { useForm } from "react-hook-form";
+import { Input } from "./FormInputs";
 
 const Nav = () => {
   const { userData, currentCity } = useSelector((state) => state.user);
@@ -21,6 +23,15 @@ const Nav = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   const dispatch = useDispatch();
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      search: "",
+    },
+  });
+
+  const searchValue = watch("search");
+  console.log("Live Search Value:", searchValue);
 
   const handleLogout = async () => {
     try {
@@ -54,10 +65,25 @@ const Nav = () => {
 
           <div className="w-[80%] flex items-center gap-2.5">
             <IoIosSearch size={25} className="text-primary" />
-            <input
+            {/* <input
               type="text"
               placeholder="Search delicious food..."
               className="px-2.5 placeholder-gray-400 outline-0 w-full"
+            /> */}
+
+            <Input
+              name="search"
+              control={control}
+              placeholder="Search delicious food..."
+              errors={{}}
+              className="mt-4 border-none focus:outline-none"
+              noFocusRing={true}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  console.log("Search Query on Enter:", e.target.value);
+                }
+              }}
             />
           </div>
         </div>
@@ -74,10 +100,25 @@ const Nav = () => {
 
           <div className="w-[80%] flex items-center gap-2.5">
             <IoIosSearch size={25} className="text-primary" />
-            <input
+            {/* <input
               type="text"
               placeholder="Search delicious food..."
               className="px-2.5 placeholder-gray-400 outline-0 w-full"
+            /> */}
+
+            <Input
+              name="search"
+              control={control}
+              placeholder="Search delicious food..."
+              errors={{}}
+              className="mt-4 border-none focus:outline-none"
+              noFocusRing={true}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  console.log("Search Query on Enter:", e.target.value);
+                }
+              }}
             />
           </div>
         </div>
