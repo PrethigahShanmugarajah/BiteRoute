@@ -15,6 +15,8 @@ import { TbReceipt2 } from "react-icons/tb";
 
 const Nav = () => {
   const { userData, city } = useSelector((state) => state.user);
+  const { myShopData } = useSelector((state) => state.owner);
+
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
@@ -99,20 +101,24 @@ const Nav = () => {
 
         {userData.role == "owner" ? (
           <>
-            <Button
-              className="hidden md:flex items-center bg-primary/20 text-primary hover:bg-primary/30 p-2!"
-              variant="custom"
-            >
-              <FaPlus size={20} />
-              <span>Add Food Item</span>
-            </Button>
+            {myShopData && (
+              <>
+                <Button
+                  className="hidden md:flex items-center bg-primary/20 text-primary hover:bg-primary/30 p-2!"
+                  variant="custom"
+                >
+                  <FaPlus size={20} />
+                  <span>Add Food Item</span>
+                </Button>
 
-            <Button
-              className="md:hidden flex items-center p-2! bg-primary/20 text-primary hover:bg-primary/30"
-              variant="custom"
-            >
-              <FaPlus size={20} />
-            </Button>
+                <Button
+                  className="md:hidden flex items-center p-2! bg-primary/20 text-primary hover:bg-primary/30"
+                  variant="custom"
+                >
+                  <FaPlus size={20} />
+                </Button>
+              </>
+            )}
 
             <div className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
               <TbReceipt2 size={20} />
@@ -121,7 +127,6 @@ const Nav = () => {
                 0
               </span>
             </div>
-
             <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
               <TbReceipt2 size={20} />
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
