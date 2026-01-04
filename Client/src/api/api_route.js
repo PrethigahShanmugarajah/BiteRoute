@@ -14,6 +14,9 @@ const API_ROUTES = {
   USER: {
     USER_GET: `${BASE_URL}/api/user/userget`,
   },
+  SHOP: {
+    SHOP_CREATE_EDIT: `${BASE_URL}/api/shop/create-edit`,
+  },
 };
 
 export default API_ROUTES;
