@@ -3,6 +3,7 @@ import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
 import {
   addItem,
+  deleteItem,
   getItemById,
   updateItem,
 } from "../controllers/itemController.js";
@@ -18,5 +19,6 @@ itemRouter.put(
   updateItem
 );
 itemRouter.get("/get-item/:itemId", isAuth, getItemById);
+itemRouter.delete("/delete-item/:itemId", isAuth, deleteItem);
 
 export default itemRouter;
