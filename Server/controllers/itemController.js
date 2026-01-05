@@ -33,7 +33,13 @@ export const addItem = async (req, res) => {
 
     shop.items.push(item._id);
     await shop.save();
-    await shop.populate("items owner");
+
+    await shop.populate("owner");
+
+    await shop.populate({
+      path: "items",
+      options: { sort: { updatedAt: -1 } },
+    });
 
     return res
       .status(201)
@@ -79,10 +85,15 @@ export const updateItem = async (req, res) => {
       });
     }
 
+    const shop = await Shop.findOne({ owner: req.userId }).populate({
+      path: "items",
+      options: { sort: { updatedAt: -1 } },
+    });
+
     return res.status(200).json({
       success: true,
       message: "Item updated successfully!",
-      item,
+      shop,
     });
   } catch (error) {
     console.error("Update Item Error:", error.message);
@@ -121,6 +132,53 @@ export const getItemById = async (req, res) => {
       success: false,
       message: "Failed to fetch item",
       error: `Get Item By Id Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Delete Item -------- */
+export const deleteItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    const item = await Item.findByIdAndDelete(itemId);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found.",
+      });
+    }
+
+    const shop = await Shop.findOne({ owner: req.userId });
+
+    if (!shop) {
+      return res.status(404).json({
+        success: false,
+        message: "Shop not found.",
+      });
+    }
+
+    shop.items = shop.items.filter((i) => i !== item._id);
+
+    await shop.save();
+    await shop.populate({
+      path: "items",
+      options: { sort: { updatedAt: -1 } },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Item deleted successfully!",
+      shop,
+    });
+  } catch (error) {
+    console.error("Delete Item Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to Delete Item",
+      error: `Delete Item Error: ${error.message}`,
     });
   }
 };
