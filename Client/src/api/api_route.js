@@ -21,6 +21,7 @@ const API_ROUTES = {
   ITEM: {
     ITEM_ADD: `${BASE_URL}/api/item/add-item`,
     ITEM_UPDATE: (itemId) => `${BASE_URL}/api/item/update-item/${itemId}`,
+    ITEM_GET_BY_ID: (itemId) => `${BASE_URL}/api/item/get-item/${itemId}`,
   },
 };
 
