@@ -22,7 +22,7 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer style={{ zIndex: 10000 }} />
       <Routes>
         <Route
           path="/signup"
