@@ -3,9 +3,41 @@ import { FaPen } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "../utils/helper";
+import api from "../api/axios";
+import API_ROUTES from "../api/api_route";
+import { useDispatch } from "react-redux";
+import { setMyShopData } from "../redux/ownerSlice";
+import { toast } from "react-toastify";
 
 const OwnerItemCard = ({ data }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleDeleteItem = async (itemId) => {
+    try {
+      const response = await api.delete(API_ROUTES.ITEM.ITEM_DELETE(itemId), {
+        withCredentials: true,
+      });
+
+      const data = response.data;
+
+      console.log("Delete Item API Response:", data);
+
+      if (data?.success) {
+        toast.success(data.message);
+        console.log("Delete Item Success:", data.message);
+
+        dispatch(setMyShopData(data.shop));
+        console.log("Delete ItemDispatch:", data.shop);
+      } else {
+        toast.warn(data?.message);
+        console.log("Delete Item Data Error:", data?.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Delete Item Error:", error);
+    }
+  };
 
   return (
     <div className="flex bg-white rounded-lg shadow-md overflow-hidden border border-gray-300 w-full max-w-2xl hover:shadow-2xl">
@@ -43,7 +75,10 @@ const OwnerItemCard = ({ data }) => {
               <FaPen size={16} />
             </div>
 
-            <div className="p-2 rounded-full hover:bg-primary/10 text-hover cursor-pointer">
+            <div
+              className="p-2 rounded-full hover:bg-primary/10 text-hover cursor-pointer"
+              onClick={() => handleDeleteItem(data._id)}
+            >
               <FaTrashAlt size={16} />
             </div>
           </div>
