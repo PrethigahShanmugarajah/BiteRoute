@@ -76,7 +76,6 @@ const OwnerDashboard = () => {
             </div>
           </div>
 
-          {/* {myShopData.items.length == 0 && ( */}
           {(myShopData?.items || []).length === 0 && (
             <div className="flex justify-center items-center p-4 sm:p-6">
               <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 border border-gray-300 hover:shadow-2xl transition-shadow duration-300">
