@@ -16,11 +16,6 @@ const AddItem = () => {
   const navigate = useNavigate();
   const { myShopData } = useSelector((state) => state.owner);
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState("");
-  const [foodType, setFoodType] = useState("veg");
-
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
 
@@ -55,53 +50,11 @@ const AddItem = () => {
 
   const dispatch = useDispatch();
 
-  // const handleImage = (e) => {
-  //   const file = e.target.files[0];
-  //   setBackendImage(file);
-  //   setFrontendImage(URL.createObjectURL(file));
-  // };
-
   const handleImage = (file) => {
     setBackendImage(file);
     setFrontendImage(URL.createObjectURL(file));
     setValue("image", file);
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("name", name);
-  //     formData.append("category", category);
-  //     formData.append("foodType", foodType);
-  //     formData.append("price", price);
-
-  //     if (backendImage) {
-  //       formData.append("image", backendImage);
-  //     }
-
-  //     const { data } = await api.post(API_ROUTES.ITEM.ITEM_ADD, formData, {
-  //       withCredentials: true,
-  //     });
-
-  //     console.log("Shop Create or Edit API Response:", data);
-
-  //     if (data.success) {
-  //       toast.success(data.message);
-  //       console.log("Shop Create or Edit Success:", data.message);
-
-  //       dispatch(setMyShopData(data.shop));
-  //       console.log("Shop Create or Edit Dispatch:", data.shop);
-  //     } else {
-  //       toast.warn(data.message);
-  //       console.log("Shop Create or Edit Data Error:", data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message || error?.message);
-  //     console.log("Shop Create or Edit Error:", error);
-  //   }
-  // };
 
   const onSubmit = async (formDataValues) => {
     try {
@@ -163,20 +116,6 @@ const AddItem = () => {
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Food Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Food Name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-            />
-          </div> */}
-
           <Input
             label="Food Name"
             name="name"
@@ -185,29 +124,6 @@ const AddItem = () => {
             errors={errors}
             required
           />
-
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Food Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover"
-              onChange={handleImage}
-            />
-
-            {frontendImage && (
-              <div className="mt-4">
-                <img
-                  src={frontendImage}
-                  alt=""
-                  className="w-full h-48 object-cover rounded-lg border border-gray-300"
-                />
-              </div>
-            )}
-          </div> */}
 
           <FileInput
             label="Food Image"
@@ -228,20 +144,6 @@ const AddItem = () => {
             </div>
           )}
 
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Price
-            </label>
-
-            <input
-              type="number"
-              placeholder="Price"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-              onChange={(e) => setPrice(e.target.value)}
-              value={price}
-            />
-          </div> */}
-
           <Input
             label="Price"
             type="number"
@@ -252,60 +154,28 @@ const AddItem = () => {
             required
           />
 
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Select Category
-            </label>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+            <SelectInput
+              label="Category"
+              name="category"
+              control={control}
+              options={categories.map((cate) => ({ label: cate, value: cate }))}
+              required={true}
+              errors={errors}
+            />
 
-            <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-              onChange={(e) => setCategory(e.target.value)}
-              value={category}
-            >
-              <option value="">Select Category</option>
-              {categories.map((cate, index) => (
-                <option value={cate} key={index}>
-                  {cate}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          <SelectInput
-            label="Category"
-            name="category"
-            control={control}
-            options={categories.map((cate) => ({ label: cate, value: cate }))}
-            required={true}
-            errors={errors}
-          />
-
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Select Food Type
-            </label>
-
-            <select
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-              onChange={(e) => setFoodType(e.target.value)}
-              value={foodType}
-            >
-              <option value="veg">Veg</option>
-              <option value="non veg">Non Veg</option>
-            </select>
-          </div> */}
-
-          <SelectInput
-            label="Food Type"
-            name="foodType"
-            control={control}
-            options={[
-              { label: "Veg", value: "veg" },
-              { label: "Non Veg", value: "non veg" },
-            ]}
-            required={true}
-            errors={errors}
-          />
+            <SelectInput
+              label="Food Type"
+              name="foodType"
+              control={control}
+              options={[
+                { label: "Veg", value: "veg" },
+                { label: "Non Veg", value: "non veg" },
+              ]}
+              required={true}
+              errors={errors}
+            />
+          </div>
 
           <Button
             className="w-full py-3 font-semibold shadow-md hover:shadow-lg duration-200"
