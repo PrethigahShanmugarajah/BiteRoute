@@ -63,7 +63,7 @@ export const createEditShop = async (req, res) => {
 /* -------- Get My Shop -------- */
 export const getMyShop = async (req, res) => {
   try {
-    const shop = await Shop.findOne({ owner: req.userId });
+    const shop = await Shop.findOne({ owner: req.userId }).populate("items");
 
     if (!shop) {
       return res.status(404).json({
