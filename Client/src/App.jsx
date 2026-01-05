@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import useGetCity from "./hooks/useGetCity";
 import useGetMyShop from "./hooks/useGetMyShop";
 import CreateEditShop from "./pages/CreateEditShop";
+import AddItem from "./pages/AddItem";
 
 const App = () => {
   useGetCurrentUser();
@@ -45,6 +46,11 @@ const App = () => {
         <Route
           path="/create-edit-shop"
           element={userData ? <CreateEditShop /> : <Navigate to={"/signin"} />}
+        />
+
+        <Route
+          path="/add-item"
+          element={userData ? <AddItem /> : <Navigate to={"/signin"} />}
         />
       </Routes>
     </>
