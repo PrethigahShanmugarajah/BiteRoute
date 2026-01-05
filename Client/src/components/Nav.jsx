@@ -14,6 +14,7 @@ import { setUserData } from "../redux/userSlice";
 import { TbReceipt2 } from "react-icons/tb";
 import { useForm } from "react-hook-form";
 import { Input } from "./FormInputs";
+import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
   const { userData, currentCity } = useSelector((state) => state.user);
@@ -23,6 +24,8 @@ const Nav = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -65,11 +68,6 @@ const Nav = () => {
 
           <div className="w-[80%] flex items-center gap-2.5">
             <IoIosSearch size={25} className="text-primary" />
-            {/* <input
-              type="text"
-              placeholder="Search delicious food..."
-              className="px-2.5 placeholder-gray-400 outline-0 w-full"
-            /> */}
 
             <Input
               name="search"
@@ -100,11 +98,6 @@ const Nav = () => {
 
           <div className="w-[80%] flex items-center gap-2.5">
             <IoIosSearch size={25} className="text-primary" />
-            {/* <input
-              type="text"
-              placeholder="Search delicious food..."
-              className="px-2.5 placeholder-gray-400 outline-0 w-full"
-            /> */}
 
             <Input
               name="search"
@@ -147,6 +140,7 @@ const Nav = () => {
                 <Button
                   className="hidden md:flex items-center bg-primary/20 text-primary hover:bg-primary/30 p-2!"
                   variant="custom"
+                  onClick={() => navigate("/add-item")}
                 >
                   <FaPlus size={20} />
                   <span>Add Food Item</span>
@@ -155,6 +149,7 @@ const Nav = () => {
                 <Button
                   className="md:hidden flex items-center p-2! bg-primary/20 text-primary hover:bg-primary/30"
                   variant="custom"
+                  onClick={() => navigate("/add-item")}
                 >
                   <FaPlus size={20} />
                 </Button>
@@ -222,9 +217,9 @@ const Nav = () => {
               {capitalizeWords(userData?.fullName)}
             </div>
 
-            <div className="md:hidden text-primary cursor-pointer">
+            {/* <div className="md:hidden text-primary cursor-pointer">
               My Orders
-            </div>
+            </div> */}
 
             <div className="text-primary cursor-pointer" onClick={handleLogout}>
               Logout
