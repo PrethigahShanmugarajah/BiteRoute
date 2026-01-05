@@ -31,9 +31,13 @@ export const addItem = async (req, res) => {
       shop: shop._id,
     });
 
+    shop.items.push(item._id);
+    await shop.save();
+    await shop.populate("items owner");
+
     return res
       .status(201)
-      .json({ success: true, message: "Item added successfully!", item });
+      .json({ success: true, message: "Item added successfully!", shop });
   } catch (error) {
     console.error("Add Item Error:", error.message);
 
