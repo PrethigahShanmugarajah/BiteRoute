@@ -119,6 +119,8 @@ const CreateEditShop = () => {
 
         dispatch(setMyShopData(data.shop));
         console.log("Shop Create or Edit Dispatch:", data.shop);
+
+        navigate("/");
       } else {
         toast.warn(data.message);
         console.log("Shop Create or Edit Data Error:", data.message);
