@@ -94,3 +94,33 @@ export const updateItem = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Item By Id -------- */
+export const getItemById = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    const item = await Item.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Item fetched successfully!",
+      item,
+    });
+  } catch (error) {
+    console.error("Get Item By Id Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch item",
+      error: `Get Item By Id Error: ${error.message}`,
+    });
+  }
+};
