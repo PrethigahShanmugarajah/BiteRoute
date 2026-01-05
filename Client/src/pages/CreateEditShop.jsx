@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { setMyShopData } from "../redux/ownerSlice";
 import { useForm } from "react-hook-form";
 import { FileInput, Input } from "../components/FormInputs";
+import { ClipLoader } from "react-spinners";
 
 const CreateEditShop = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const CreateEditShop = () => {
   const [state, setState] = useState(myShopData?.state || currentState);
   const [frontendImage, setFrontendImage] = useState(myShopData?.image || null);
   const [backendImage, setBackendImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -94,6 +96,9 @@ const CreateEditShop = () => {
   // };
 
   const onSubmit = async (formDataValues) => {
+    e.preventDefault();
+
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", formDataValues.name);
@@ -121,6 +126,8 @@ const CreateEditShop = () => {
         console.log("Shop Create or Edit Dispatch:", data.shop);
 
         navigate("/");
+
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Shop Create or Edit Data Error:", data.message);
@@ -128,6 +135,7 @@ const CreateEditShop = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Signup Error:", error);
+      setLoading(false);
     }
   };
 
@@ -294,8 +302,9 @@ const CreateEditShop = () => {
           <Button
             className="w-full py-3 font-semibold shadow-md hover:shadow-lg duration-200"
             type="submit"
+            disabled={loading}
           >
-            Save
+            {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Save"}
           </Button>
         </form>
       </div>
