@@ -28,7 +28,7 @@ function useGetCurrentUser() {
           console.log("Dispatch User:", data.user);
         } else {
           toast.error(data.message);
-          console.log("Fetch User Data Error:", error);
+          console.log("Fetch User Data Error:", data.message);
         }
       } catch (error) {
         toast.error(error?.response?.data?.message || error?.message);
