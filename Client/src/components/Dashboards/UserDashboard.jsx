@@ -7,12 +7,16 @@ import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 
 const UserDashboard = () => {
-  const { currentCity } = useSelector((state) => state.user);
+  const { currentCity, shopsInMyCity } = useSelector((state) => state.user);
 
   const cateScrollRef = useRef();
+  const shopScrollRef = useRef();
 
   const [showRightCateButton, setShowRightCateButton] = useState(false);
   const [showLeftCateButton, setShowLeftCateButton] = useState(false);
+
+  const [showRightShopButton, setShowRightShopButton] = useState(false);
+  const [showLeftShopButton, setShowLeftShopButton] = useState(false);
 
   const updateButton = (ref, setLeftButton, setLeftRightButton) => {
     const element = ref.current;
@@ -47,6 +51,11 @@ const UserDashboard = () => {
         setShowLeftCateButton,
         setShowRightCateButton
       );
+      updateButton(
+        shopScrollRef,
+        setShowLeftShopButton,
+        setShowRightShopButton
+      );
 
       cateScrollRef.current.addEventListener("scroll", () => {
         updateButton(
@@ -55,9 +64,17 @@ const UserDashboard = () => {
           setShowRightCateButton
         );
       });
+
+      shopScrollRef.current.addEventListener("scroll", () => {
+        updateButton(
+          shopScrollRef,
+          setShowLeftShopButton,
+          setShowRightShopButton
+        );
+      });
     }
 
-    return () =>
+    return () => {
       cateScrollRef.current.remeveEventListener("scroll", () => {
         updateButton(
           cateScrollRef,
@@ -65,11 +82,21 @@ const UserDashboard = () => {
           setShowRightCateButton
         );
       });
-  }, [cateScrollRef]);
+
+      shopScrollRef.current.remeveEventListener("scroll", () => {
+        updateButton(
+          shopScrollRef,
+          setShowLeftShopButton,
+          setShowRightShopButton
+        );
+      });
+    };
+  }, [categories]);
 
   return (
     <div className="w-full min-h-screen bg-bg flex flex-col items-center">
       <Nav />
+
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-black text-2xl sm:text-3xl">
           Inspiration for your first order.
@@ -90,7 +117,11 @@ const UserDashboard = () => {
             ref={cateScrollRef}
           >
             {categories.map((cate, index) => (
-              <CategoryCard data={cate} key={index} />
+              <CategoryCard
+                name={cate.category}
+                image={cate.image}
+                key={index}
+              />
             ))}
           </div>
 
@@ -108,6 +139,41 @@ const UserDashboard = () => {
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-black text-2xl sm:text-3xl">
           Best shop in {currentCity}
+        </h1>
+
+        <div className="w-full relative">
+          {showLeftShopButton && (
+            <button
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-hover z-10"
+              onClick={() => scrollHandler(shopScrollRef, "left")}
+            >
+              <FaCircleChevronLeft />
+            </button>
+          )}
+
+          <div
+            className="w-full flex overflow-x-auto gap-4 pb-2"
+            ref={shopScrollRef}
+          >
+            {shopsInMyCity?.map((shop, index) => (
+              <CategoryCard name={shop.name} image={shop.image} key={index} />
+            ))}
+          </div>
+
+          {showRightShopButton && (
+            <button
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-hover z-10"
+              onClick={() => scrollHandler(shopScrollRef, "right")}
+            >
+              <FaCircleChevronRight />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
+        <h1 className="text-black text-2xl sm:text-3xl">
+          Suggested Food Items
         </h1>
       </div>
     </div>
