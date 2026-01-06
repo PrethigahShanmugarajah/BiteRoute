@@ -12,6 +12,7 @@ function useGetMyShop() {
 
   useEffect(() => {
     if (!userData || userData.role !== "owner") return;
+
     const fetchShop = async () => {
       try {
         const { data } = await api.get(API_ROUTES.SHOP.SHOP_GET_MY, {
@@ -27,7 +28,7 @@ function useGetMyShop() {
           console.log("Dispatch Shop:", data.shop);
         } else {
           toast.error(data.message);
-          console.log("Fetch Shop Data Error:", error.message);
+          console.log("Fetch Shop Data Error:", data.message);
         }
       } catch (error) {
         toast.error(error?.response?.data?.message || error?.message);
