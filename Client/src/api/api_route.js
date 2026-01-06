@@ -17,6 +17,7 @@ const API_ROUTES = {
   SHOP: {
     SHOP_CREATE_EDIT: `${BASE_URL}/api/shop/create-edit`,
     SHOP_GET_MY: `${BASE_URL}/api/shop/get-shop`,
+    SHOP_GET_BY_CITY: (city) => `${BASE_URL}/api/shop/get-shop-by-city/${city}`,
   },
   ITEM: {
     ITEM_ADD: `${BASE_URL}/api/item/add-item`,
