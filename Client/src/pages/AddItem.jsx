@@ -20,16 +20,17 @@ const AddItem = () => {
   const [backendImage, setBackendImage] = useState(null);
 
   const categories = [
-    "Snacks",
-    "Main Course",
-    "Desserts",
+    "Breakfast",
+    "Lunch",
+    "Dinner",
+    "Short Eats",
+    "Kottu",
+    "Noodles",
     "Pizza",
+    "Seafood",
+    "Desserts & Sweets",
     "Burgers",
     "Sandwiches",
-    "South Indian",
-    "North Indian",
-    "Chinese",
-    "Fast Food",
     "Others",
   ];
 
