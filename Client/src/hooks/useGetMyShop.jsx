@@ -3,13 +3,15 @@ import { useEffect } from "react";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMyShopData } from "../redux/ownerSlice";
 
 function useGetMyShop() {
   const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.user);
 
   useEffect(() => {
+    if (!userData || userData.role !== "owner") return;
     const fetchShop = async () => {
       try {
         const { data } = await api.get(API_ROUTES.SHOP.SHOP_GET_MY, {
@@ -33,7 +35,7 @@ function useGetMyShop() {
       }
     };
     fetchShop();
-  }, [dispatch]);
+  }, [dispatch, userData]);
 }
 
 export default useGetMyShop;
