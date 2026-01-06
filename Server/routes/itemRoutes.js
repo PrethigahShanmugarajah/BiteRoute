@@ -4,6 +4,7 @@ import { isAuth } from "../middlewares/isAuth.js";
 import {
   addItem,
   deleteItem,
+  getItemByCity,
   getItemById,
   updateItem,
 } from "../controllers/itemController.js";
@@ -20,5 +21,6 @@ itemRouter.put(
 );
 itemRouter.get("/get-item/:itemId", isAuth, getItemById);
 itemRouter.delete("/delete-item/:itemId", isAuth, deleteItem);
+itemRouter.get("/get-item-shop-by-city/:city", isAuth, getItemByCity);
 
 export default itemRouter;
