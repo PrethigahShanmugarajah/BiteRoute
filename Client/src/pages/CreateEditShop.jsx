@@ -20,10 +20,6 @@ const CreateEditShop = () => {
     (state) => state.user
   );
 
-  const [name, setName] = useState(myShopData?.name || "");
-  const [address, setAddress] = useState(myShopData?.address || currentAddress);
-  const [city, setCity] = useState(myShopData?.city || currentCity);
-  const [state, setState] = useState(myShopData?.state || currentState);
   const [frontendImage, setFrontendImage] = useState(myShopData?.image || null);
   const [backendImage, setBackendImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,59 +41,13 @@ const CreateEditShop = () => {
 
   const dispatch = useDispatch();
 
-  // const handleImage = (e) => {
-  //   const file = e.target.files[0];
-  //   setBackendImage(file);
-  //   setFrontendImage(URL.createObjectURL(file));
-  // };
-
   const handleImage = (file) => {
     setBackendImage(file);
     setFrontendImage(URL.createObjectURL(file));
     setValue("image", file);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("name", name);
-  //     formData.append("city", city);
-  //     formData.append("state", state);
-  //     formData.append("address", address);
-
-  //     if (backendImage) {
-  //       formData.append("image", backendImage);
-  //     }
-
-  //     const { data } = await api.post(
-  //       API_ROUTES.SHOP.SHOP_CREATE_EDIT,
-  //       formData,
-  //       { withCredentials: true }
-  //     );
-
-  //     console.log("Shop Create or Edit API Response:", data);
-
-  //     if (data.success) {
-  //       toast.success(data.message);
-  //       console.log("Shop Create or Edit Success:", data.message);
-
-  //       dispatch(setMyShopData(data.shop));
-  //       console.log("Shop Create or Edit Dispatch:", data.shop);
-  //     } else {
-  //       toast.warn(data.message);
-  //       console.log("Shop Create or Edit Data Error:", data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message || error?.message);
-  //     console.log("Shop Create or Edit Error:", error);
-  //   }
-  // };
-
   const onSubmit = async (formDataValues) => {
-    e.preventDefault();
-
     setLoading(true);
     try {
       const formData = new FormData();
@@ -163,20 +113,6 @@ const CreateEditShop = () => {
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Shop Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Shop Name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-            />
-          </div> */}
-
           <Input
             label="Shop Name"
             name="name"
@@ -185,29 +121,6 @@ const CreateEditShop = () => {
             errors={errors}
             required
           />
-
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Shop Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover"
-              onChange={handleImage}
-            />
-
-            {frontendImage && (
-              <div className="mt-4">
-                <img
-                  src={frontendImage}
-                  alt=""
-                  className="w-full h-48 object-cover rounded-lg border border-gray-300"
-                />
-              </div>
-            )}
-          </div> */}
 
           <FileInput
             label="Shop Image"
@@ -229,20 +142,6 @@ const CreateEditShop = () => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* <div>
-              <label className="block text-sm font-medium text-black mb-1.5">
-                City
-              </label>
-
-              <input
-                type="text"
-                placeholder="City"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-                onChange={(e) => setCity(e.target.value)}
-                value={city}
-              />
-            </div> */}
-
             <Input
               label="City"
               name="city"
@@ -251,20 +150,6 @@ const CreateEditShop = () => {
               errors={errors}
               required
             />
-
-            {/* <div>
-              <label className="block text-sm font-medium text-black mb-1.5">
-                State
-              </label>
-
-              <input
-                type="text"
-                placeholder="State"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-                onChange={(e) => setState(e.target.value)}
-                value={state}
-              />
-            </div> */}
 
             <Input
               label="State"
@@ -275,20 +160,6 @@ const CreateEditShop = () => {
               required
             />
           </div>
-
-          {/* <div>
-            <label className="block text-sm font-medium text-black mb-1.5">
-              Shop Address
-            </label>
-
-            <input
-              type="text"
-              placeholder="Shop Address"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-hover placeholder:text-gray-400 text-black"
-              onChange={(e) => setAddress(e.target.value)}
-              value={address}
-            />
-          </div> */}
 
           <Input
             label="Address"
