@@ -89,3 +89,35 @@ export const getMyShop = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Shop By City -------- */
+export const getShopByCity = async (req, res) => {
+  try {
+    const { city } = req.params;
+
+    const shops = await Shop.find({
+      city: { $regex: new RegExp(`^${city}$`, "i") },
+    }).populate("items");
+
+    if (!shops || shops.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No shops found in ${city}.`,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Shops in ${city} fetched successfully!`,
+      shops,
+    });
+  } catch (error) {
+    console.error("Get Shop By City Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch shops by city",
+      error: `Get Shop By City Error: ${error.message}`,
+    });
+  }
+};
