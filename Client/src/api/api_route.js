@@ -24,6 +24,8 @@ const API_ROUTES = {
     ITEM_UPDATE: (itemId) => `${BASE_URL}/api/item/update-item/${itemId}`,
     ITEM_GET_BY_ID: (itemId) => `${BASE_URL}/api/item/get-item/${itemId}`,
     ITEM_DELETE: (itemId) => `${BASE_URL}/api/item/delete-item/${itemId}`,
+    ITEM_GET_BY_CITY: (city) =>
+      `${BASE_URL}/api/shop/get-item-shop-by-city/${city}`,
   },
 };
 
