@@ -5,9 +5,12 @@ import CategoryCard from "../CategoryCard";
 import Nav from "../Nav";
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import FoodCard from "../FoodCard";
 
 const UserDashboard = () => {
-  const { currentCity, shopsInMyCity } = useSelector((state) => state.user);
+  const { currentCity, shopsInMyCity, itemsInMyCity } = useSelector(
+    (state) => state.user
+  );
 
   const cateScrollRef = useRef();
   const shopScrollRef = useRef();
@@ -75,7 +78,7 @@ const UserDashboard = () => {
     }
 
     return () => {
-      cateScrollRef.current.remeveEventListener("scroll", () => {
+      cateScrollRef.current.removeEventListener("scroll", () => {
         updateButton(
           cateScrollRef,
           setShowLeftCateButton,
@@ -83,7 +86,7 @@ const UserDashboard = () => {
         );
       });
 
-      shopScrollRef.current.remeveEventListener("scroll", () => {
+      shopScrollRef.current.removeEventListener("scroll", () => {
         updateButton(
           shopScrollRef,
           setShowLeftShopButton,
@@ -175,6 +178,12 @@ const UserDashboard = () => {
         <h1 className="text-black text-2xl sm:text-3xl">
           Suggested Food Items
         </h1>
+      </div>
+
+      <div className="w-full h-auto flex flex-wrap gap-5 justify-center">
+        {itemsInMyCity?.map((item, index) => (
+          <FoodCard key={index} data={item} />
+        ))}
       </div>
     </div>
   );
