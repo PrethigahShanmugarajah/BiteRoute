@@ -63,7 +63,7 @@ export const signUp = async (req, res) => {
     return res.status(201).json({
       success: true,
       token,
-      message: "SignUp successfully!",
+      message: "Signed up successfully!",
       user: responseUser,
     });
   } catch (error) {
@@ -71,7 +71,7 @@ export const signUp = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to SignUp",
+      message: "Failed to sign up",
       error: `SignUp Error: ${error.message}`,
     });
   }
@@ -120,7 +120,7 @@ export const signIn = async (req, res) => {
     return res.status(200).json({
       success: true,
       token,
-      message: "SignIn successfully!",
+      message: "Signed in successfully!",
       user: responseUser,
     });
   } catch (error) {
@@ -128,7 +128,7 @@ export const signIn = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to SignIn",
+      message: "Failed to sign in",
       error: `SignIn Error: ${error.message}`,
     });
   }
@@ -141,13 +141,13 @@ export const signOut = async (req, res) => {
 
     return res
       .status(200)
-      .json({ success: true, message: "Signout successfully!" });
+      .json({ success: true, message: "Signed out successfully!" });
   } catch (error) {
     console.error("SignOut Error:", error.message);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to SignOut",
+      message: "Failed to sign out",
       error: `SignOut Error: ${error.message}`,
     });
   }
@@ -181,7 +181,7 @@ export const sendOtp = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to Send OTP",
+      message: "Failed to send OTP",
       error: `Send OTP Error: ${error.message}`,
     });
   }
@@ -224,7 +224,7 @@ export const verifyOtp = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to Verify OTP",
+      message: "Failed to verify OTP",
       error: `Verify OTP Error: ${error.message}`,
     });
   }
@@ -259,7 +259,7 @@ export const resetPassword = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to Reset Password",
+      message: "Failed to reset password",
       error: `Reset Password Error: ${error.message}`,
     });
   }
