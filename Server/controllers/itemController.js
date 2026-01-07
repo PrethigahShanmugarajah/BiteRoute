@@ -100,7 +100,7 @@ export const updateItem = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to Update Item.",
+      message: "Failed to Update Item",
       error: `Update Item Error: ${error.message}`,
     });
   }
