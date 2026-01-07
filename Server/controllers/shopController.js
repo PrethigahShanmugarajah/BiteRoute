@@ -26,7 +26,6 @@ export const createEditShop = async (req, res) => {
         image,
         owner: req.userId,
       });
-      isNewShop = true;
     } else {
       let updateData = { name, city, state, address, owner: req.userId };
       if (image) updateData.image = image;
