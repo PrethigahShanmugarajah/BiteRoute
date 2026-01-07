@@ -17,7 +17,10 @@ import { Input } from "./FormInputs";
 import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
-  const { userData, currentCity } = useSelector((state) => state.user);
+  const { userData, currentCity, cartItems } = useSelector(
+    (state) => state.user
+  );
+
   const { myShopData } = useSelector((state) => state.owner);
 
   const [showInfo, setShowInfo] = useState(false);
@@ -163,6 +166,7 @@ const Nav = () => {
                 0
               </span>
             </div>
+
             <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
               <TbReceipt2 size={20} />
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
@@ -173,9 +177,13 @@ const Nav = () => {
         ) : (
           <>
             <div className="relative cursor-pointer">
-              <FiShoppingCart size={25} className="text-primary" />
+              <FiShoppingCart
+                size={25}
+                className="text-primary"
+                onClick={() => navigate("/cart")}
+              />
               <span className="absolute -right-2.25 -top-3 text-primary">
-                0
+                {cartItems.length}
               </span>
             </div>
 
@@ -216,10 +224,6 @@ const Nav = () => {
             <div className="text-[17px]">
               {capitalizeWords(userData?.fullName)}
             </div>
-
-            {/* <div className="md:hidden text-primary cursor-pointer">
-              My Orders
-            </div> */}
 
             <div className="text-primary cursor-pointer" onClick={handleLogout}>
               Logout
