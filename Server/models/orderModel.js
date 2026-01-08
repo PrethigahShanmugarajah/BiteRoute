@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 
 const shopOrderItemsSchema = new mongoose.Schema(
   {
-    item: { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
+    item: { type: mongoose.Schema.Types.ObjectId, ref: "Item", required: true },
+    name: String,
     price: Number,
     quantity: Number,
   },
