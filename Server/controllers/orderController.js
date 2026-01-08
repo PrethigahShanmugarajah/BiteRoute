@@ -111,3 +111,38 @@ export const getUserOrders = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Owner Order -------- */
+export const getOwnerOrder = async (req, res) => {
+  try {
+    const orders = await Order.find({ "shopOrders.owner": req.userId })
+      .sort({ createdAt: -1 })
+      .populate("shopOrders.shop", "name")
+      .populate("user")
+      .populate("shopOrders.shopOrderItems.item", "name image price");
+
+    const filteredOrders = orders.map((order) => {
+      const filteredShopOrders = order.shopOrders.filter(
+        (shopOrder) => shopOrder.owner.toString() === req.userId
+      );
+      return {
+        ...order._doc,
+        shopOrders: filteredShopOrders,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Owner orders fetched successfully!",
+      orders: filteredOrders,
+    });
+  } catch (error) {
+    console.error("Get Owner Order Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch owner orders",
+      error: `Get Owner Order Error: ${error.message}`,
+    });
+  }
+};
