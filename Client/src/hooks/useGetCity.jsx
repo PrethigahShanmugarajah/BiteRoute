@@ -7,6 +7,7 @@ import {
   setCurrentCity,
   setCurrentState,
 } from "../redux/userSlice";
+import { setAddress, setLocation } from "../redux/mapSlice";
 
 function useGetCity() {
   const dispatch = useDispatch();
@@ -16,9 +17,15 @@ function useGetCity() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(async (position) => {
-      console.log(position);
+      console.log("Full Geolocation Object:", position);
+
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
+
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
+
+      dispatch(setLocation({ lat: latitude, lon: longitude }));
 
       const { data } = await api.get(
         `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${apiKey}`
@@ -34,12 +41,22 @@ function useGetCity() {
 
       dispatch(
         setCurrentAddress(
-          data.results[0].address_line2 || data.results[0].address_line1
+          data?.results[0]?.address_line2 || data?.results[0]?.address_line1
         )
       );
       console.log(
         "Dispatch Address:",
-        data.results[0].address_line2 || data.results[0].address_line1
+        data?.results[0]?.address_line2 || data?.results[0]?.address_line1
+      );
+
+      dispatch(
+        setAddress(
+          data?.results[0]?.address_line2 || data?.results[0]?.address_line1
+        )
+      );
+      console.log(
+        "Final Address:",
+        data?.results[0]?.address_line2 || data?.results[0]?.address_line1
       );
     });
   }, [userData]);
