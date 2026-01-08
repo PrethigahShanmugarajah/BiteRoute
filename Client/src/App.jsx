@@ -15,6 +15,7 @@ import UpdateItem from "./pages/UpdateItem";
 import useGetShopByCity from "./hooks/useGetShopByCity";
 import useGetItemsByCity from "./hooks/useGetItemsByCity";
 import CartPage from "./pages/CartPage";
+import CheckOut from "./pages/CheckOut";
 
 const App = () => {
   useGetCurrentUser();
@@ -67,6 +68,11 @@ const App = () => {
         <Route
           path="/cart"
           element={userData ? <CartPage /> : <Navigate to={"/signin"} />}
+        />
+
+        <Route
+          path="/checkout"
+          element={userData ? <CheckOut /> : <Navigate to={"/signin"} />}
         />
       </Routes>
     </>
