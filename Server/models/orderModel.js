@@ -26,7 +26,7 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: { type: String, enum: ["cod", "online"], required: true },
     deliveryAddress: { text: String, latitude: Number, longitude: Number },
     totalAmount: { type: Number },
-    shopOrder: [shopOrderSchema],
+    shopOrders: [shopOrderSchema],
   },
   { timestamps: true }
 );
