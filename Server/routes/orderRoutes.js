@@ -1,11 +1,16 @@
 // Cravely / Server / routes / orderRoutes.js
 import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
-import { getUserOrders, placeOrder } from "../controllers/orderController.js";
+import {
+  getOwnerOrder,
+  getUserOrders,
+  placeOrder,
+} from "../controllers/orderController.js";
 
 const orderRouter = express.Router();
 
 orderRouter.post("/place-order", isAuth, placeOrder);
 orderRouter.get("/user-orders", isAuth, getUserOrders);
+orderRouter.get("/owner-orders", isAuth, getOwnerOrder);
 
 export default orderRouter;
