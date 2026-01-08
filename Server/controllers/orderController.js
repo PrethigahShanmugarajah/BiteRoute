@@ -51,7 +51,7 @@ export const placeOrder = async (req, res) => {
           owner: shop.owner._id,
           subtotal,
           shopOrderItems: items.map((i) => ({
-            item: i._id,
+            item: i.id,
             price: i.price,
             quantity: i.quantity,
             name: i.name,
@@ -83,6 +83,31 @@ export const placeOrder = async (req, res) => {
       success: false,
       message: "Failed to place order",
       error: `Place Order Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Get User Orders -------- */
+export const getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .sort({ createdAt: -1 })
+      .populate("shopOrders.shop", "name")
+      .populate("shopOrders.owner", "name email mobile")
+      .populate("shopOrders.shopOrderItems.item", "name image price");
+
+    return res.status(200).json({
+      success: true,
+      message: "User orders fetched successfully!",
+      orders,
+    });
+  } catch (error) {
+    console.error("Get User Orders Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch user orders",
+      error: `Get User Orders Error: ${error.message}`,
     });
   }
 };
