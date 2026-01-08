@@ -3,6 +3,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CartItemCard from "../components/CartItemCard";
+import Button from "../components/Button";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ const CartPage = () => {
           </p>
         ) : (
           <>
-            {/* <div className="space-y-4 "> */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cartItems?.map((item, index) => (
                 <CartItemCard data={item} key={index} />
@@ -43,9 +43,16 @@ const CartPage = () => {
             </div>
 
             <div className="mt-4 flex justify-end">
-              <button className="bg-primary text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-hover transition">
+              {/* <button
+                className="bg-primary text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-hover transition"
+                onClick={() => navigate("/checkout")}
+              >
                 Proceed to Checkout
-              </button>
+              </button> */}
+
+              <Button onClick={() => navigate("/checkout")}>
+                Proceed to Checkout
+              </Button>
             </div>
           </>
         )}
