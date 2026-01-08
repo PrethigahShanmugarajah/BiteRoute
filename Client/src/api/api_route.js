@@ -29,6 +29,7 @@ const API_ROUTES = {
   },
   ORDER: {
     ORDER_PLACE: `${BASE_URL}/api/order/place-order`,
+    ORDER_USER_GET: `${BASE_URL}/api/order/place-order`,
   },
 };
 
