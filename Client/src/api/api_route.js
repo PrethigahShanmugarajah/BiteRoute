@@ -27,6 +27,9 @@ const API_ROUTES = {
     ITEM_GET_BY_CITY: (city) =>
       `${BASE_URL}/api/item/get-item-shop-by-city/${city}`,
   },
+  ORDER: {
+    ORDER_PLACE: `${BASE_URL}/api/order/place-order`,
+  },
 };
 
 export default API_ROUTES;
