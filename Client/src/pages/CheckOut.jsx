@@ -12,6 +12,8 @@ import api from "../api/axios";
 import { MdDeliveryDining } from "react-icons/md";
 import { FaCreditCard, FaMobileScreenButton } from "react-icons/fa6";
 import Button from "../components/Button";
+import { toast } from "react-toastify";
+import API_ROUTES from "../api/api_route";
 
 function RecenterMap({ location }) {
   if (location.lat && location.lon) {
@@ -88,6 +90,38 @@ const CheckOut = () => {
       );
     } catch (error) {
       console.log("Get Current Address Error:", error);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      const { data } = await api.post(
+        API_ROUTES.ORDER.ORDER_PLACE,
+        {
+          paymentMethod,
+          deliveryAddress: {
+            text: addressInput,
+            latitude: location.lat,
+            longitude: location.lon,
+          },
+          totalAmount,
+          cartItems,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        toast.success(data?.message);
+        console.log("Place Order Success:", data?.message);
+      } else {
+        toast.warn(data?.message);
+        console.log("Place Order Data Error:", data?.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Place Order Error:", error);
     }
   };
 
@@ -253,7 +287,10 @@ const CheckOut = () => {
           </div>
         </section>
 
-        <Button className="w-full py-3 font-semibold">
+        <Button
+          className="w-full py-3 font-semibold"
+          onClick={handlePlaceOrder}
+        >
           {paymentMethod == "cod" ? "Place Order" : "Pay & Place Order"}
         </Button>
       </div>
