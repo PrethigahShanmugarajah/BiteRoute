@@ -1,6 +1,7 @@
 // BiteRoute / Server / controllers / orderController.js
 import Order from "../models/orderModel.js";
 import Shop from "../models/shopModel.js";
+import User from "../models/userModel.js";
 
 /* -------- Place Order -------- */
 export const placeOrder = async (req, res) => {
@@ -87,62 +88,64 @@ export const placeOrder = async (req, res) => {
   }
 };
 
-/* -------- Get User Orders -------- */
-export const getUserOrders = async (req, res) => {
+/* -------- Get My Orders -------- */
+export const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.userId })
-      .sort({ createdAt: -1 })
-      .populate("shopOrders.shop", "name")
-      .populate("shopOrders.owner", "name email mobile")
-      .populate("shopOrders.shopOrderItems.item", "name image price");
+    const user = await User.findById(req.userId);
+    if (user.role == "user") {
+      const orders = await Order.find({ user: req.userId })
+        .sort({ createdAt: -1 })
+        .populate("shopOrders.shop", "name")
+        .populate("shopOrders.owner", "name email mobile")
+        .populate("shopOrders.shopOrderItems.item", "name image price");
 
-    return res.status(200).json({
-      success: true,
-      message: "User orders fetched successfully!",
-      orders,
-    });
+      return res.status(200).json({
+        success: true,
+        message: "User orders fetched successfully!",
+        orders,
+      });
+    } else if (user.role == "owner") {
+      const orders = await Order.find({ "shopOrders.owner": req.userId })
+        .sort({ createdAt: -1 })
+        .populate("shopOrders.shop", "name")
+        .populate("user")
+        .populate("shopOrders.shopOrderItems.item", "name image price");
+
+      const filteredOrders = orders.map((order) => {
+        const filteredShopOrders = order.shopOrders.filter(
+          (so) => so.owner.toString() === req.userId
+        );
+
+        return {
+          ...order.toObject(),
+          shopOrders: filteredShopOrders,
+        };
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Owner orders fetched successfully!",
+        orders: filteredOrders,
+      });
+    }
   } catch (error) {
-    console.error("Get User Orders Error:", error.message);
+    let logMessage = "Get Orders Error";
+    let responseMessage = "Failed to fetch orders";
+
+    if (req.userRole === "user") {
+      logMessage = "Get User Orders Error";
+      responseMessage = "Failed to fetch user orders";
+    } else if (req.userRole === "owner") {
+      logMessage = "Get Owner Orders Error";
+      responseMessage = "Failed to fetch owner orders";
+    }
+
+    console.error(`${logMessage}:`, error.message);
 
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch user orders",
-      error: `Get User Orders Error: ${error.message}`,
-    });
-  }
-};
-
-/* -------- Get Owner Order -------- */
-export const getOwnerOrder = async (req, res) => {
-  try {
-    const orders = await Order.find({ "shopOrders.owner": req.userId })
-      .sort({ createdAt: -1 })
-      .populate("shopOrders.shop", "name")
-      .populate("user")
-      .populate("shopOrders.shopOrderItems.item", "name image price");
-
-    const filteredOrders = orders.map((order) => {
-      const filteredShopOrders = order.shopOrders.filter(
-        (shopOrder) => shopOrder.owner.toString() === req.userId
-      );
-      return {
-        ...order._doc,
-        shopOrders: filteredShopOrders,
-      };
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Owner orders fetched successfully!",
-      orders: filteredOrders,
-    });
-  } catch (error) {
-    console.error("Get Owner Order Error:", error.message);
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch owner orders",
-      error: `Get Owner Order Error: ${error.message}`,
+      message: responseMessage,
+      error: `${logMessage}: ${error.message}`,
     });
   }
 };
