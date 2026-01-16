@@ -58,9 +58,10 @@ export const SelectInput = ({
   required = false,
   errors,
   themeColor = "#5B21B6",
+  className = "",
 }) => {
   return (
-    <div className="mb-4">
+    <div className={`mb-4 ${className}`}>
       <label className="block text-sm font-medium text-black mb-1">
         {label}
       </label>
