@@ -159,7 +159,10 @@ const Nav = () => {
               </>
             )}
 
-            <div className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
+            <div
+              className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium"
+              onClick={() => navigate("/my-orders")}
+            >
               <TbReceipt2 size={20} />
               <span>My Orders</span>
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
@@ -190,6 +193,7 @@ const Nav = () => {
             <Button
               className="hidden md:block px-3! py-1! bg-primary/20 text-primary hover:bg-primary/30"
               variant="custom"
+              onClick={() => navigate("/my-orders")}
             >
               My Orders
             </Button>
@@ -209,7 +213,10 @@ const Nav = () => {
               {capitalizeWords(userData?.fullName)}
             </div>
 
-            <div className="md:hidden text-primary cursor-pointer">
+            <div
+              className="md:hidden text-primary cursor-pointer"
+              onClick={() => navigate("/my-orders")}
+            >
               My Orders
             </div>
 
