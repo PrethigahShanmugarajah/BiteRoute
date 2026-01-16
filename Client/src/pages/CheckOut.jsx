@@ -14,6 +14,7 @@ import { FaCreditCard, FaMobileScreenButton } from "react-icons/fa6";
 import Button from "../components/Button";
 import { toast } from "react-toastify";
 import API_ROUTES from "../api/api_route";
+import { addMyOrders } from "../redux/userSlice";
 
 function RecenterMap({ location }) {
   if (location.lat && location.lon) {
@@ -115,6 +116,11 @@ const CheckOut = () => {
       if (data.success) {
         toast.success(data?.message);
         console.log("Place Order Success:", data?.message);
+
+        dispatch(addMyOrders(data));
+        console.log("Add My Orders Dispatch:", addMyOrders(data));
+
+        navigate("/order-placed");
       } else {
         toast.warn(data?.message);
         console.log("Place Order Data Error:", data?.message);
