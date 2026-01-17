@@ -1,8 +1,12 @@
 // BiteRoute / Client / src / components / OwnerOrderCard.jsx
-import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
-import { MdPhone } from "react-icons/md";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { SelectInput } from "./FormInputs";
+import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
+import { MdPhone } from "react-icons/md";
+import api from "../api/axios";
+import API_ROUTES from "../api/api_route";
+import { toast } from "react-toastify";
 
 const OwnerOrderCard = ({ data }) => {
   const statusOptions = [
@@ -11,11 +15,49 @@ const OwnerOrderCard = ({ data }) => {
     { label: "Out of Delivery", value: "out of delivery" },
   ];
 
-  const { control } = useForm({
+  const isFirstRender = useRef(true);
+
+  const { control, watch } = useForm({
     defaultValues: {
       status: data.shopOrders.status,
     },
   });
+
+  const selectedStatus = watch("status");
+
+  const handleUpdateStatus = async (orderId, shopId, status) => {
+    try {
+      const data = await api.post(
+        API_ROUTES.ORDER.ORDER_UPDATE_STATUS(orderId, shopId),
+        { status },
+        { withCredentials: true }
+      );
+
+      console.log("Order Update Status API Response:", data.data);
+
+      if (data.data.success) {
+        toast.success(data.data.message);
+        console.log("Order Update Status Success:", data.data.message);
+      } else {
+        toast.warn(data.data.message);
+        console.log("Order Update Status Data Error:", data.data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Order Update Status Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (selectedStatus !== data.shopOrders.status) {
+      handleUpdateStatus(data._id, data.shopOrders.shop._id, selectedStatus);
+    }
+  }, [selectedStatus]);
 
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
@@ -67,21 +109,12 @@ const OwnerOrderCard = ({ data }) => {
           </span>
         </span>
 
-        {/* <select
-          value={data.shopOrders.status}
-          className="rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-1 text-primary"
-        >
-          <option value="pending">Pending</option>
-          <option value="preparing">Preparing</option>
-          <option value="out of delivery">Out of Delivery</option>
-        </select> */}
-
         <SelectInput
           label="Status"
           name="status"
           control={control}
           options={statusOptions}
-          className="w-40"
+          className="mb-0 w-48"
         />
       </div>
 
