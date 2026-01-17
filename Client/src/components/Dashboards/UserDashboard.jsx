@@ -97,7 +97,7 @@ const UserDashboard = () => {
   }, [categories]);
 
   return (
-    <div className="w-full min-h-screen bg-bg flex flex-col items-center">
+    <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-bg overflow-y-auto">
       <Nav />
 
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
