@@ -180,7 +180,7 @@ const UserDashboard = () => {
         </h1>
       </div>
 
-      <div className="w-full h-auto flex flex-wrap gap-5 justify-center">
+      <div className="w-full h-auto flex flex-wrap gap-5 justify-center mb-4">
         {itemsInMyCity?.map((item, index) => (
           <FoodCard key={index} data={item} />
         ))}
