@@ -11,7 +11,7 @@ const OwnerDashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full min-h-screen bg-bg flex flex-col items-center">
+    <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-bg overflow-y-auto">
       <Nav />
       {!myShopData && (
         <div className="flex justify-center items-center p-4 sm:p-6">
