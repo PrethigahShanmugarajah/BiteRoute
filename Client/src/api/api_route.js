@@ -1,4 +1,4 @@
-// Emplora / Client / src / api / api_route.js;
+// BiteRoute / Client / src / api / api_route.js;
 const BASE_URL = import.meta.env.VITE_BASEURL;
 
 const API_ROUTES = {
@@ -30,6 +30,8 @@ const API_ROUTES = {
   ORDER: {
     ORDER_PLACE: `${BASE_URL}/api/order/place-order`,
     ORDER_MY_GET: `${BASE_URL}/api/order/my-orders`,
+    ORDER_UPDATE_STATUS: (orderId, shopId) =>
+      `${BASE_URL}/api/order/update-status/${orderId}/${shopId}`,
   },
 };
 
