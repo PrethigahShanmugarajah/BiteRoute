@@ -182,16 +182,18 @@ const Nav = () => {
           </>
         ) : (
           <>
-            <div className="relative cursor-pointer">
-              <FiShoppingCart
-                size={25}
-                className="text-primary"
-                onClick={() => navigate("/cart")}
-              />
-              <span className="absolute -right-2.25 -top-3 text-primary">
-                {cartItems.length}
-              </span>
-            </div>
+            {userData.role == "user" && (
+              <div className="relative cursor-pointer">
+                <FiShoppingCart
+                  size={25}
+                  className="text-primary"
+                  onClick={() => navigate("/cart")}
+                />
+                <span className="absolute -right-2.25 -top-3 text-primary">
+                  {cartItems.length}
+                </span>
+              </div>
+            )}
 
             <div
               className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium"
@@ -199,9 +201,9 @@ const Nav = () => {
             >
               <TbReceipt2 size={20} />
               <span>My Orders</span>
-              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+              {/* <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
                 0
-              </span>
+              </span> */}
             </div>
 
             <div
@@ -209,9 +211,9 @@ const Nav = () => {
               onClick={() => navigate("/my-orders")}
             >
               <TbReceipt2 size={20} />
-              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+              {/* <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
                 0
-              </span>
+              </span> */}
             </div>
           </>
         )}
@@ -223,27 +225,16 @@ const Nav = () => {
           {capitalizeFirstLetter(userData?.fullName.slice(0, 1))}
         </div>
 
-        {showInfo && userData.role == "user" && (
-          <div className="fixed top-28 right-2.5 md:right-[10%] lg:right-[10%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12">
-            <div className="text-[17px]">
-              {capitalizeWords(userData?.fullName)}
-            </div>
-
-            <div
-              className="md:hidden text-primary cursor-pointer"
-              onClick={() => navigate("/my-orders")}
-            >
-              My Orders
-            </div>
-
-            <div className="text-primary cursor-pointer" onClick={handleLogout}>
-              Logout
-            </div>
-          </div>
-        )}
-
-        {showInfo && userData.role == "owner" && (
-          <div className="fixed top-28 right-2.5 md:right-[10%] lg:right-[24%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12">
+        {showInfo && (
+          <div
+            className={`fixed top-28 right-2.5 md:right-[10%] ${
+              userData?.role === "user"
+                ? "lg:right-[10%]"
+                : userData?.role === "owner"
+                ? "lg:right-[24%]"
+                : "lg:right-[30%]"
+            } w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12`}
+          >
             <div className="text-[17px]">
               {capitalizeWords(userData?.fullName)}
             </div>
