@@ -170,7 +170,10 @@ const Nav = () => {
               </span>
             </div>
 
-            <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium">
+            <div
+              className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium"
+              onClick={() => navigate("/my-orders")}
+            >
               <TbReceipt2 size={20} />
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
                 0
@@ -190,13 +193,26 @@ const Nav = () => {
               </span>
             </div>
 
-            <Button
-              className="hidden md:block px-3! py-1! bg-primary/20 text-primary hover:bg-primary/30"
-              variant="custom"
+            <div
+              className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium"
               onClick={() => navigate("/my-orders")}
             >
-              My Orders
-            </Button>
+              <TbReceipt2 size={20} />
+              <span>My Orders</span>
+              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+                0
+              </span>
+            </div>
+
+            <div
+              className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-primary/10 text-primary font-medium"
+              onClick={() => navigate("/my-orders")}
+            >
+              <TbReceipt2 size={20} />
+              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
+                0
+              </span>
+            </div>
           </>
         )}
 
