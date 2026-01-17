@@ -154,3 +154,37 @@ export const getMyOrders = async (req, res) => {
     });
   }
 };
+
+/* -------- Update Order Status -------- */
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, shopId } = req.params;
+    const { status } = req.body;
+    const order = await Order.findById(orderId);
+
+    const shopOrder = order.shopOrders.find((o) => o.shop == shopId);
+    if (!shopOrder) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Shop order not found" });
+    }
+
+    shopOrder.status = status;
+    await shopOrder.save();
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order status updated successfully!",
+      status: shopOrder.status,
+    });
+  } catch (error) {
+    console.error("Update Order Status Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update order status",
+      error: `Update Order Status Error: ${error.message}`,
+    });
+  }
+};
