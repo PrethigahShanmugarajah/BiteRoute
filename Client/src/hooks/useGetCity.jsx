@@ -33,8 +33,13 @@ function useGetCity() {
 
       console.log("Get City:", data);
 
-      dispatch(setCurrentCity(data.results[0].city));
-      console.log("Dispatch City:", data.results[0].city);
+      dispatch(
+        setCurrentCity(data?.results[0]?.city || data?.results[0]?.country)
+      );
+      console.log(
+        "Dispatch City:",
+        data?.results[0]?.city || data?.results[0]?.country
+      );
 
       dispatch(setCurrentState(data.results[0].state));
       console.log("Dispatch State:", data.results[0].state);
