@@ -191,7 +191,7 @@ export const updateOrderStatus = async (req, res) => {
       const nearByIds = nearByDeliveryPersons.map((b) => b._id);
       const busyIds = await DeliveryAssignment.find({
         assignedTo: { $in: nearByIds },
-        status: { $in: ["broadcasted", "completed"] },
+        status: { $in: ["brodcasted", "completed"] },
       }).distinct("assignedTo");
 
       const busyIdSet = new Set(busyIds.map((id) => String(id)));
@@ -210,12 +210,12 @@ export const updateOrderStatus = async (req, res) => {
         });
       }
 
-      const deliveryAssignment = await deliveryAssignment.create({
+      const deliveryAssignment = await DeliveryAssignment.create({
         order: order._id,
         shop: shopOrder.shop,
         shopOrderId: shopOrder._id,
         brodcastedTo: candidates,
-        status: "broadcasted",
+        status: "brodcasted",
       });
 
       shopOrder.assignedDeliveryPerson = deliveryAssignment.assignedTo;
@@ -256,6 +256,52 @@ export const updateOrderStatus = async (req, res) => {
       success: false,
       message: "Failed to update order status",
       error: `Update Order Status Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Get Delivery Person Assignment -------- */
+export const getDeliveryPersonAssignment = async (req, res) => {
+  try {
+    const deliveryPersonId = req.userId;
+    const assignments = await DeliveryAssignment.find({
+      brodcastedTo: deliveryPersonId,
+      status: "brodcasted",
+    })
+      .populate("order")
+      .populate("shop");
+
+    if (!assignments || assignments.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No orders assigned",
+      });
+    }
+
+    const formated = assignments.map((a) => ({
+      assignmentId: a._id,
+      orderId: a.order._id,
+      shopName: a.shop.name,
+      deliveryAddress: a.order.deliveryAddress,
+      items:
+        a.order.shopOrders.find((so) => so._id == a.shopOrderId)
+          .shopOrderItems || [],
+      subtotal:
+        a.order.shopOrders.find((so) => so._id == a.shopOrderId).subtotal || [],
+    }));
+
+    return res.status(200).json({
+      success: true,
+      message: "Assignments fetched successfully!",
+      formated,
+    });
+  } catch (error) {
+    console.error("Get Delivery Person Assignment Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get delivery person assignment",
+      error: `Get Delivery Person Assignment Error: ${error.message}`,
     });
   }
 };
