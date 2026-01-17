@@ -33,6 +33,7 @@ const API_ROUTES = {
     ORDER_MY_GET: `${BASE_URL}/api/order/my-orders`,
     ORDER_UPDATE_STATUS: (orderId, shopId) =>
       `${BASE_URL}/api/order/update-status/${orderId}/${shopId}`,
+    ORDER_GET_DELIVERYPERSON_ASSIGNMENTS: `${BASE_URL}/api/order/get-assignments`,
   },
 };
 
