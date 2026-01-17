@@ -76,18 +76,18 @@ const OwnerItemCard = ({ data }) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="text-primary font-bold">{data.price}</div>
+          <div className="text-primary font-bold">LKR {data.price}</div>
 
           <div className="flex items-center gap-2">
             <div
-              className="p-2 rounded-full hover:bg-primary/10 text-hover cursor-pointer"
+              className="p-2 rounded-full text-primary hover:bg-hover/10  cursor-pointer"
               onClick={() => navigate(`/update-item/${data._id}`)}
             >
               <FaPen size={16} />
             </div>
 
             <div
-              className="p-2 rounded-full hover:bg-primary/10 text-hover cursor-pointer"
+              className="p-2 rounded-full text-red-500 hover:bg-red-600/10 cursor-pointer"
               // onClick={() => handleDeleteItem(data._id)}
               onClick={() => setShowDelete(true)}
             >
