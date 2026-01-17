@@ -28,13 +28,6 @@ const OwnerDashboard = () => {
                 customers every day.
               </p>
 
-              {/* <button
-                className="bg-primary text-white px-5 sm:px-6 py-2 rounded-full font-medium shadow-md hover:bg-hover transition-colors duration-200"
-                onClick={() => navigate("/create-edit-shop")}
-              >
-                Get Started
-              </button> */}
-
               <Button
                 className="bg-primary text-white px-5 sm:px-6 py-2 rounded-full font-medium shadow-md hover:bg-hover transition-colors duration-200"
                 onClick={() => navigate("/create-edit-shop")}
@@ -92,13 +85,6 @@ const OwnerDashboard = () => {
                     them to the menu.
                   </p>
 
-                  {/* <button
-                    className="bg-primary text-white px-5 sm:px-6 py-2 rounded-full font-medium shadow-md hover:bg-hover transition-colors duration-200"
-                    onClick={() => navigate("/create-edit-shop")}
-                  >
-                    Add Food
-                  </button> */}
-
                   <Button
                     className="bg-primary text-white px-5 sm:px-6 py-2 rounded-full font-medium shadow-md hover:bg-hover transition-colors duration-200"
                     onClick={() => navigate("/add-item")}
@@ -111,7 +97,7 @@ const OwnerDashboard = () => {
           )}
 
           {myShopData.items.length > 0 && (
-            <div className="flex flex-col items-center gap-4 w-full max-w-3xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-col items-center w-full max-w-3xl">
               {myShopData.items.map((item, index) => (
                 <OwnerItemCard data={item} key={index} />
               ))}
