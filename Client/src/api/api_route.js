@@ -13,6 +13,7 @@ const API_ROUTES = {
   },
   USER: {
     USER_GET: `${BASE_URL}/api/user/userget`,
+    USER_UPDATE_LOCATION: `${BASE_URL}/api/user/update-location`,
   },
   SHOP: {
     SHOP_CREATE_EDIT: `${BASE_URL}/api/shop/create-edit`,
