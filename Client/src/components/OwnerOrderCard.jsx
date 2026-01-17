@@ -1,5 +1,5 @@
 // BiteRoute / Client / src / components / OwnerOrderCard.jsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectInput } from "./FormInputs";
 import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
@@ -7,9 +7,16 @@ import { MdPhone } from "react-icons/md";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { updateOrderStatus } from "../redux/userSlice";
 
 const OwnerOrderCard = ({ data }) => {
+  const [availablePersons, setAvailablePersons] = useState([]);
+
+  const dispatch = useDispatch();
+
   const statusOptions = [
+    { label: "Change", value: "" },
     { label: "Pending", value: "pending" },
     { label: "Preparing", value: "preparing" },
     { label: "Out of Delivery", value: "out of delivery" },
@@ -38,6 +45,14 @@ const OwnerOrderCard = ({ data }) => {
       if (data.data.success) {
         toast.success(data.data.message);
         console.log("Order Update Status Success:", data.data.message);
+
+        dispatch(updateOrderStatus({ orderId, shopId, status }));
+        console.log("Order Update Status Dispatch:", {
+          orderId,
+          shopId,
+          status,
+        });
+        setAvailablePersons(data.availablePersons);
       } else {
         toast.warn(data.data.message);
         console.log("Order Update Status Data Error:", data.data.message);
@@ -105,7 +120,7 @@ const OwnerOrderCard = ({ data }) => {
         <span className="text-sm">
           Status:{" "}
           <span className="font-semibold text-primary">
-            {capitalizeFirstLetter(data.shopOrders.status)}
+            {capitalizeWords(data.shopOrders.status)}
           </span>
         </span>
 
@@ -117,6 +132,21 @@ const OwnerOrderCard = ({ data }) => {
           className="mb-0 w-48"
         />
       </div>
+
+      {data.shopOrders.status == "out of delivery" && (
+        <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
+          <p>Available Delivery Persons:</p>
+          {availablePersons.length > 0 ? (
+            availablePersons.map((b, index) => {
+              <div className="text-gray-300">
+                {capitalizeFirstLetter(b.fullName)} - {b.mobile}
+              </div>;
+            })
+          ) : (
+            <div>Waiting for delivery person to accept</div>
+          )}
+        </div>
+      )}
 
       <div className="text-right font-bold text-black text-sm">
         Total: LKR {data.shopOrders.subtotal}
