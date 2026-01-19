@@ -12,6 +12,7 @@ function useGetMyOrders() {
 
   useEffect(() => {
     if (!userData) return;
+    if (userData.role === "deliveryPerson") return;
 
     const fetchMyOrders = async () => {
       try {
