@@ -370,3 +370,82 @@ export const acceptOrder = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Current Order -------- */
+export const getCurrentOrder = async (req, res) => {
+  try {
+    const assignment = await DeliveryAssignment.findOne({
+      assignedTo: req.userId,
+      status: "assigned",
+    })
+      .populate("shop", "name")
+      .populate("assignedTo", "fullName email mobile location")
+      .populate({
+        path: "order",
+        populate: [{ path: "user", select: "fullName email location mobile" }],
+      });
+
+    if (!assignment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Delivery assignment not found" });
+    }
+
+    if (!assignment.order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    const shopOrder = assignment.order.shopOrders.find(
+      (so) => String(so._id) == String(assignment.shopOrderId)
+    );
+
+    if (!shopOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Shop order not found" });
+    }
+
+    let deliveryPersonLocation = { lat: null, lon: null };
+
+    // if (assignment.assignedTo?.location?.coordinates?.length === 2) {
+    //   deliveryPersonLocation.lat =
+    //     assignment.assignedTo.location.coordinates[1];
+    //   deliveryPersonLocation.lon =
+    //     assignment.assignedTo.location.coordinates[0];
+    // }
+
+    if (assignment.assignedTo?.[0]?.location?.coordinates?.length === 2) {
+      deliveryPersonLocation.lat =
+        assignment.assignedTo[0].location.coordinates[1];
+      deliveryPersonLocation.lon =
+        assignment.assignedTo[0].location.coordinates[0];
+    }
+
+    let customerLocation = { lat: null, lon: null };
+    if (assignment.order.deliveryAddress) {
+      customerLocation.lat = assignment.order.deliveryAddress.latitude;
+      customerLocation.lon = assignment.order.deliveryAddress.longitude;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Current order fetched successfully!",
+      _id: assignment.order._id,
+      user: assignment.order.user,
+      shopOrder,
+      deliveryAddress: assignment.order.deliveryAddress,
+      deliveryPersonLocation,
+      customerLocation,
+    });
+  } catch (error) {
+    console.error("Get Current Order Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get current order",
+      error: `Get Current Order Error: ${error.message}`,
+    });
+  }
+};
