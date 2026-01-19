@@ -34,6 +34,8 @@ const API_ROUTES = {
     ORDER_UPDATE_STATUS: (orderId, shopId) =>
       `${BASE_URL}/api/order/update-status/${orderId}/${shopId}`,
     ORDER_GET_DELIVERYPERSON_ASSIGNMENTS: `${BASE_URL}/api/order/get-assignments`,
+    ORDER_ACCEPT: (assignmentId) =>
+      `${BASE_URL}/api/order/accept-order/${assignmentId}`,
   },
 };
 
