@@ -32,7 +32,6 @@ const Button = ({
       ? "hover:bg-hover hover:border-none"
       : "hover:bg-gray-50");
 
-  // Check if user already passed a display class
   const hasDisplayClass = /(flex|inline-flex|block|hidden)/.test(className);
 
   const baseClasses = `
