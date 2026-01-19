@@ -135,13 +135,22 @@ const OwnerOrderCard = ({ data }) => {
 
       {data.shopOrders.status == "out of delivery" && (
         <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
-          <p>Available Delivery Persons:</p>
-          {availablePersons.length > 0 ? (
-            availablePersons.map((b, index) => {
+          {data.shopOrders.assignedDeliveryPerson ? (
+            <p>Assigned Delivery Person:</p>
+          ) : (
+            <p>Available Delivery Persons:</p>
+          )}
+          {availablePersons?.length > 0 ? (
+            availablePersons?.map((b, index) => {
               <div className="text-gray-300">
                 {capitalizeFirstLetter(b.fullName)} - {b.mobile}
               </div>;
             })
+          ) : data.shopOrders.assignedDeliveryPerson ? (
+            <div>
+              {capitalizeWords(data.shopOrders.assignedDeliveryPerson.fullName)}{" "}
+              - {data.shopOrders.assignedDeliveryPerson.mobile}
+            </div>
           ) : (
             <div>Waiting for delivery person to accept</div>
           )}
