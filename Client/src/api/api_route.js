@@ -36,6 +36,7 @@ const API_ROUTES = {
     ORDER_GET_DELIVERYPERSON_ASSIGNMENTS: `${BASE_URL}/api/order/get-assignments`,
     ORDER_ACCEPT: (assignmentId) =>
       `${BASE_URL}/api/order/accept-order/${assignmentId}`,
+    ORDER_GET_CURRENT: `${BASE_URL}/api/order/get-current-order`,
   },
 };
 
