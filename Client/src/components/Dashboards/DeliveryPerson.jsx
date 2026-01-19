@@ -7,10 +7,13 @@ import API_ROUTES from "../../api/api_route";
 import Button from "../Button";
 import { capitalizeWords } from "../../utils/helper";
 import { toast } from "react-toastify";
+import DeliveryPersonTracking from "../DeliveryPersonTracking";
+import { FiPackage } from "react-icons/fi";
 
 const DeliveryPerson = () => {
   const { userData } = useSelector((state) => state.user);
-  const [availableAssignments, setAvailableAssignments] = useState([]);
+  const [availableAssignments, setAvailableAssignments] = useState(null);
+  const [currentOrder, setCurrentOrder] = useState();
 
   const getAssignments = async () => {
     try {
@@ -34,6 +37,28 @@ const DeliveryPerson = () => {
     }
   };
 
+  const getCurrentOrder = async () => {
+    try {
+      const { data } = await api.get(API_ROUTES.ORDER.ORDER_GET_CURRENT, {
+        withCredentials: true,
+      });
+
+      console.log("Fetch Current Order API Response:", data);
+
+      if (data.success) {
+        console.log("Fetch Current Order Success:", data.message);
+
+        setCurrentOrder(data);
+      } else {
+        toast.error(data.message);
+        console.log("Fetch Current Order Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Fetch Current Order Error:", error);
+    }
+  };
+
   const acceptOrder = async (assignmentId) => {
     try {
       const { data } = await api.post(
@@ -48,7 +73,7 @@ const DeliveryPerson = () => {
         toast.success(data.message);
         console.log("Accept Order Success:", data.message);
 
-        getAssignments();
+        getCurrentOrder();
       } else {
         toast.error(data.message);
         console.log("Accept Order Data Error:", data.message);
@@ -61,6 +86,7 @@ const DeliveryPerson = () => {
 
   useEffect(() => {
     getAssignments();
+    getCurrentOrder();
   }, [userData]);
 
   return (
@@ -80,42 +106,70 @@ const DeliveryPerson = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 shadow-md w-[90%] border border-gray-300">
-          <h1 className="text-lg font-bold mb-4 flex items-center gap-2">
-            Available Orders
-          </h1>
+        {!currentOrder && (
+          <div className="bg-white rounded-2xl p-5 shadow-md w-[90%] border border-gray-300">
+            <h1 className="text-lg font-bold mb-4 flex items-center gap-2">
+              Available Orders
+            </h1>
 
-          <div className="space-y-4">
-            {availableAssignments?.length > 0 ? (
-              availableAssignments?.map((a, index) => (
-                <div
-                  className="border border-gray-300 rounded-lg p-4 flex justify-between items-center"
-                  key={index}
-                >
-                  <div>
-                    <p className="text-sm font-semibold">{a?.shopName}</p>
-                    <p className="text-sm text-gray-500">
-                      <span className="font-semibold">Delivery Address:</span>{" "}
-                      {a?.deliveryAddress.text}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {a?.items?.length} items | {a?.subtotal}
-                    </p>
-                  </div>
-
-                  <Button
-                    className="px-4! py-1! text-sm"
-                    onClick={() => acceptOrder(a.assignmentId)}
+            <div className="space-y-4">
+              {availableAssignments?.length > 0 ? (
+                availableAssignments?.map((a, index) => (
+                  <div
+                    className="border border-gray-300 rounded-lg p-4 flex justify-between items-center"
+                    key={index}
                   >
-                    Accept
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">No Available Orders</p>
-            )}
+                    <div>
+                      <p className="text-sm font-semibold">{a?.shopName}</p>
+                      <p className="text-sm text-gray-500">
+                        <span className="font-semibold">Delivery Address:</span>{" "}
+                        {a?.deliveryAddress.text}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {a?.items?.length} items | {a?.subtotal}
+                      </p>
+                    </div>
+
+                    <Button
+                      className="px-4! py-1! text-sm"
+                      onClick={() => acceptOrder(a.assignmentId)}
+                    >
+                      Accept
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No Available Orders</p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {currentOrder && (
+          <div className="bg-white rounded-2xl p-5 shadow-md w-[90%] border border-gray-300">
+            <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+              <FiPackage className="text-2xl" />
+              Current Orders
+            </h2>
+
+            <div className="border border-gray-300 rounded-lg p-4 mb-3">
+              <p className="font-semibold text-sm">
+                {currentOrder?.shopOrder.shop.name}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                {currentOrder?.deliveryAddress.text}
+              </p>
+
+              <p className="text-xs text-gray-500">
+                {currentOrder.shopOrder.shopOrderItems.length} items |{" "}
+                {currentOrder.shopOrder.subtotal}
+              </p>
+            </div>
+
+            <DeliveryPersonTracking data={currentOrder} />
+          </div>
+        )}
       </div>
     </div>
   );
