@@ -449,3 +449,35 @@ export const getCurrentOrder = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Order By Id -------- */
+export const getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId)
+      .populate("user")
+      .populate({ path: "shopOrders.shop", model: "Shop" })
+      .populate({ path: "shopOrders.assignedDeliveryPerson", model: "Shop" })
+      .populate({ path: "shopOrders.shopOrderItems.item", model: "Item" })
+      .lean();
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Order fetched successfully!", order });
+  } catch (error) {
+    console.error("Get Order By Id Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get order",
+      error: `Get Order By Id Error: ${error.message}`,
+    });
+  }
+};
