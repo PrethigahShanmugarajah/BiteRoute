@@ -41,13 +41,28 @@ export const getCurrentUser = async (req, res) => {
 /* -------- Update User Location -------- */
 export const updateUserLocation = async (req, res) => {
   try {
-    const { lat, lon } = req.body;
+    let { lat, lon } = req.body;
+
+    lat = Number(lat);
+    lon = Number(lon);
+
+    if (
+      !Number.isFinite(lat) ||
+      !Number.isFinite(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid latitude or longitude" });
+    }
+
     const user = await User.findByIdAndUpdate(
       req.userId,
-      {
-        location: { type: "Point", coordinates: [lon, lat] },
-      },
-      { new: true }
+      { location: { type: "Point", coordinates: [lon, lat] } },
+      { new: true, runValidators: true }
     );
 
     if (!user) {
@@ -56,9 +71,11 @@ export const updateUserLocation = async (req, res) => {
         .json({ success: false, message: "User not found." });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Location Updated!" });
+    return res.status(200).json({
+      success: true,
+      message: "Location Updated!",
+      location: user.location,
+    });
   } catch (error) {
     console.error("Update User Location Error:", error.message);
 
