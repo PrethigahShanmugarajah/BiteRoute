@@ -9,11 +9,19 @@ import { capitalizeWords } from "../../utils/helper";
 import { toast } from "react-toastify";
 import DeliveryPersonTracking from "../DeliveryPersonTracking";
 import { FiPackage } from "react-icons/fi";
+import { useForm } from "react-hook-form";
+import { Input } from "../FormInputs";
 
 const DeliveryPerson = () => {
   const { userData } = useSelector((state) => state.user);
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [currentOrder, setCurrentOrder] = useState();
+  const [showOtpBox, setShowOtpBox] = useState(false);
+
+  const {
+    control,
+    formState: { errors },
+  } = useForm();
 
   const getAssignments = async () => {
     try {
@@ -57,6 +65,10 @@ const DeliveryPerson = () => {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Fetch Current Order Error:", error);
     }
+  };
+
+  const handleSendOtp = (e) => {
+    setShowOtpBox(true);
   };
 
   const acceptOrder = async (assignmentId) => {
@@ -168,6 +180,43 @@ const DeliveryPerson = () => {
             </div>
 
             <DeliveryPersonTracking data={currentOrder} />
+
+            {!showOtpBox ? (
+              <Button
+                className="mt-4 w-full bg-green-500 text-white  hover:bg-green-600"
+                variant="custom"
+                onClick={handleSendOtp}
+              >
+                Mark As Delivered
+              </Button>
+            ) : (
+              <div className="mt-4 p-4 border border-gray-300 rounded-xl">
+                <p className="text-sm font-semibold mb-2">
+                  Enter OTP send to{" "}
+                  <span className="text-primary">
+                    {capitalizeWords(currentOrder?.user?.fullName)}
+                  </span>
+                </p>
+
+                {/* <input
+                  type="text"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  placeholder="Enter OTP"
+                /> */}
+
+                <Input
+                  label="OTP"
+                  name="otp"
+                  type="text"
+                  control={control}
+                  placeholder="Enter OTP"
+                  required
+                  errors={errors}
+                />
+
+                <Button className="w-full">Submit OTP</Button>
+              </div>
+            )}
           </div>
         )}
       </div>
