@@ -117,7 +117,8 @@ export const getMyOrders = async (req, res) => {
         .sort({ createdAt: -1 })
         .populate("shopOrders.shop", "name")
         .populate("user")
-        .populate("shopOrders.shopOrderItems.item", "name image price");
+        .populate("shopOrders.shopOrderItems.item", "name image price")
+        .populate("shopOrders.assignedDeliveryPerson", "fullName mobile");
 
       const filteredOrders = orders.map((order) => ({
         _id: order._id,
@@ -352,27 +353,9 @@ export const acceptOrder = async (req, res) => {
       });
     }
 
-    // const shopOrder = order.shopOrders.find(
-    //   (so) => so._id == assignment.shopOrderId
-    // );
-
-    // shopOrder.assignedDeliveryPerson = req.userId;
-
-    const shopOrder = order.shopOrders.find(
-      (so) => so._id.toString() === assignment.shopOrderId.toString()
-    );
-
-    if (!shopOrder) {
-      return res.status(404).json({
-        success: false,
-        message: "Shop order not found in this order",
-      });
-    }
-
+    let shopOrder = order.shopOrders.id(assignment.shopOrderId);
     shopOrder.assignedDeliveryPerson = req.userId;
-
     await order.save();
-    await order.populate("shopOrders.assignedDeliveryPerson");
 
     return res
       .status(200)
