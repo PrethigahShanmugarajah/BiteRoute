@@ -52,7 +52,7 @@ const OwnerItemCard = ({ data }) => {
 
   return (
     <div className="flex bg-white rounded-lg shadow-md overflow-hidden border border-gray-300 w-full max-w-2xl hover:shadow-2xl">
-      <div className="w-36 shrink-0 bg-gray-50">
+      <div className="w-36 h-36 shrink-0 bg-gray-50">
         <img
           src={data.image}
           alt={data.name}
