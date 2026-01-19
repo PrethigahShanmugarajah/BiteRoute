@@ -37,6 +37,8 @@ const API_ROUTES = {
     ORDER_ACCEPT: (assignmentId) =>
       `${BASE_URL}/api/order/accept-order/${assignmentId}`,
     ORDER_GET_CURRENT: `${BASE_URL}/api/order/get-current-order`,
+    ORDER_GET_BY_ID: (orderId) =>
+      `${BASE_URL}/api/order/get-order-by-id/${orderId}`,
   },
 };
 
