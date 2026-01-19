@@ -218,7 +218,8 @@ export const updateOrderStatus = async (req, res) => {
         status: "brodcasted",
       });
 
-      shopOrder.assignedDeliveryPerson = deliveryAssignment.assignedTo;
+      shopOrder.assignedDeliveryPerson =
+        deliveryAssignment.assignedTo[0] || null;
       shopOrder.assignment = deliveryAssignment._id;
 
       deliveryPersonsPayload = availablePersons.map((b) => ({
@@ -280,14 +281,16 @@ export const getDeliveryPersonAssignment = async (req, res) => {
 
     const formated = assignments.map((a) => ({
       assignmentId: a._id,
+      status: a.status,
       orderId: a.order._id,
       shopName: a.shop.name,
       deliveryAddress: a.order.deliveryAddress,
       items:
-        a.order.shopOrders.find((so) => so._id == a.shopOrderId)
-          .shopOrderItems || [],
+        a.order.shopOrders.find((so) => so._id.equals(a.shopOrderId))
+          ?.shopOrderItems || [],
       subtotal:
-        a.order.shopOrders.find((so) => so._id == a.shopOrderId).subtotal || [],
+        a.order.shopOrders.find((so) => so._id.equals(a.shopOrderId))
+          ?.subtotal || [],
     }));
 
     return res.status(200).json({
@@ -302,6 +305,85 @@ export const getDeliveryPersonAssignment = async (req, res) => {
       success: false,
       message: "Failed to get delivery person assignment",
       error: `Get Delivery Person Assignment Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Accept Order -------- */
+export const acceptOrder = async (req, res) => {
+  try {
+    const { assignmentId } = req.params;
+    const assignment = await DeliveryAssignment.findById(assignmentId);
+
+    if (!assignment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Assignment not found" });
+    }
+
+    if (assignment.status !== "brodcasted") {
+      return res
+        .status(409)
+        .json({ success: false, message: "Assignment has expired" });
+    }
+
+    const alreadyAssigned = await DeliveryAssignment.findOne({
+      assignedTo: req.userId,
+      status: { $in: ["assigned"] },
+    });
+
+    if (alreadyAssigned) {
+      return res.status(409).json({
+        success: false,
+        message: "You are already assigned to another order",
+      });
+    }
+
+    assignment.assignedTo = req.userId;
+    assignment.status = "assigned";
+    assignment.acceptedAt = new Date();
+    await assignment.save();
+
+    const order = await Order.findById(assignment.order);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // const shopOrder = order.shopOrders.find(
+    //   (so) => so._id == assignment.shopOrderId
+    // );
+
+    // shopOrder.assignedDeliveryPerson = req.userId;
+
+    const shopOrder = order.shopOrders.find(
+      (so) => so._id.toString() === assignment.shopOrderId.toString()
+    );
+
+    if (!shopOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Shop order not found in this order",
+      });
+    }
+
+    shopOrder.assignedDeliveryPerson = req.userId;
+
+    await order.save();
+    await order.populate("shopOrders.assignedDeliveryPerson");
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Order accepted successfully!", order });
+  } catch (error) {
+    console.error("Accept Order Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to accept order",
+      error: `Accept Order Error: ${error.message}`,
     });
   }
 };
