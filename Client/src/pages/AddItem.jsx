@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { setMyShopData } from "../redux/ownerSlice";
 import { useForm } from "react-hook-form";
 import { FileInput, Input, SelectInput } from "../components/FormInputs";
+import { ClipLoader } from "react-spinners";
 
 const AddItem = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AddItem = () => {
 
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const categories = [
     "Breakfast",
@@ -58,6 +60,7 @@ const AddItem = () => {
   };
 
   const onSubmit = async (formDataValues) => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", formDataValues.name);
@@ -83,6 +86,7 @@ const AddItem = () => {
         console.log("Add Item Dispatch:", data.shop);
 
         navigate("/");
+        setLoading(false);
       } else {
         toast.warn(data.message);
         console.log("Add Item Data Error:", data.message);
@@ -90,6 +94,8 @@ const AddItem = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Add Item Error:", error);
+
+      setLoading(false);
     }
   };
 
@@ -181,8 +187,9 @@ const AddItem = () => {
           <Button
             className="w-full py-3 font-semibold shadow-md hover:shadow-lg duration-200"
             type="submit"
+            disabled={loading}
           >
-            Save
+            {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Save"}
           </Button>
         </form>
       </div>
