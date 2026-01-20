@@ -1,4 +1,5 @@
 // BiteRoute / Client / src / category.js
+import All from "./assets/All.png";
 import Breakfast from "./assets/Breakfast.png";
 import Lunch from "./assets/Lunch.png";
 import Dinner from "./assets/Dinner.png";
@@ -13,6 +14,7 @@ import Sandwiches from "./assets/Sandwiches.png";
 import Others from "./assets/Others.png";
 
 export const categories = [
+  { category: "All", image: All },
   { category: "Breakfast", image: Breakfast },
   { category: "Lunch", image: Lunch },
   { category: "Dinner", image: Dinner },
