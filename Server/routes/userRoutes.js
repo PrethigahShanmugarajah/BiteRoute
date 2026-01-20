@@ -1,4 +1,4 @@
-// Cravely / Server / routes / userRoutes.js
+// BiteRoute / Server / routes / userRoutes.js
 import express from "express";
 import { isAuth } from "../middlewares/isAuth.js";
 import {

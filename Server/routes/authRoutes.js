@@ -1,4 +1,4 @@
-// Cravely / Server / routes / authRoutes.js
+// BiteRoute / Server / routes / authRoutes.js
 import express from "express";
 import {
   googleAuth,
