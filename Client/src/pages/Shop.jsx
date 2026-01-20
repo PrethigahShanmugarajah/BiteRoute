@@ -6,6 +6,7 @@ import API_ROUTES from "../api/api_route";
 import { FaArrowLeft, FaStore, FaUtensils } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import FoodCard from "../components/FoodCard";
+import Button from "../components/Button";
 
 const Shop = () => {
   const { shopId } = useParams();
@@ -42,12 +43,13 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-bg">
-      <button
-        className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded-full shadow-md transition"
+      <Button
+        className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/50 hover:bg-black/70 text-white px-3!"
         onClick={() => navigate("/")}
+        variant="custom"
       >
         <FaArrowLeft /> <span>Back</span>
-      </button>
+      </Button>
 
       {shop && (
         <div className="relative w-full h-64 md:h-80 lg:h-96">
@@ -67,7 +69,7 @@ const Shop = () => {
             <div className="flex items-center gap-2.5">
               <FaLocationDot size={22} color="red" />
 
-              <p className="text-lg font-medium text-gray-200 mt-2.5">
+              <p className="text-lg font-medium text-white mt-2.5">
                 {shop.address}
               </p>
             </div>
@@ -76,8 +78,8 @@ const Shop = () => {
       )}
 
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <h2 className="flex items-center justify-center gap-3 text-3xl font-bold mb-10 text-gray-800">
-          <FaUtensils color="red" /> Our Menu
+        <h2 className="flex items-center justify-center gap-3 text-3xl font-bold mb-10 text-black">
+          <FaUtensils className="text-primary" /> Our Menu
         </h2>
 
         {items.length > 0 ? (
