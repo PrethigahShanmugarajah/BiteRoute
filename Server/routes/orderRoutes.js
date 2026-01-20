@@ -8,6 +8,7 @@ import {
   getMyOrders,
   getOrderById,
   placeOrder,
+  sendDeliveryOtp,
   updateOrderStatus,
 } from "../controllers/orderController.js";
 
@@ -20,5 +21,6 @@ orderRouter.get("/get-assignments", isAuth, getDeliveryPersonAssignment);
 orderRouter.post("/accept-order/:assignmentId", isAuth, acceptOrder);
 orderRouter.get("/get-current-order", isAuth, getCurrentOrder);
 orderRouter.get("/get-order-by-id/:orderId", isAuth, getOrderById);
+orderRouter.post("/send-delivery-otp", isAuth, sendDeliveryOtp);
 
 export default orderRouter;
