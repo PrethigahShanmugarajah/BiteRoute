@@ -10,6 +10,7 @@ import {
   placeOrder,
   sendDeliveryOtp,
   updateOrderStatus,
+  verifyDeliveryOtp,
 } from "../controllers/orderController.js";
 
 const orderRouter = express.Router();
@@ -22,5 +23,6 @@ orderRouter.post("/accept-order/:assignmentId", isAuth, acceptOrder);
 orderRouter.get("/get-current-order", isAuth, getCurrentOrder);
 orderRouter.get("/get-order-by-id/:orderId", isAuth, getOrderById);
 orderRouter.post("/send-delivery-otp", isAuth, sendDeliveryOtp);
+orderRouter.post("/verify-delivery-otp", isAuth, verifyDeliveryOtp);
 
 export default orderRouter;
