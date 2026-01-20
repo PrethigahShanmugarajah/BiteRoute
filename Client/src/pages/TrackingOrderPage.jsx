@@ -101,25 +101,26 @@ const TrackingOrderPage = () => {
             <p className="text-green-600 font-semibold text-lg">Delivered</p>
           )}
 
-          {shopOrder?.assignedDeliveryPerson && (
-            <div className="h-100 w-full rounded-2xl overflow-hidden shadow-md">
-              <DeliveryPersonTracking
-                data={{
-                  deliveryPersonLocation: {
-                    lat: shopOrder?.assignedDeliveryPerson?.location
-                      ?.coordinates[1],
-                    lon: shopOrder?.assignedDeliveryPerson?.location
-                      ?.coordinates[0],
-                  },
+          {shopOrder?.assignedDeliveryPerson &&
+            shopOrder?.status !== "delivered" && (
+              <div className="h-100 w-full rounded-2xl overflow-hidden shadow-md">
+                <DeliveryPersonTracking
+                  data={{
+                    deliveryPersonLocation: {
+                      lat: shopOrder?.assignedDeliveryPerson?.location
+                        ?.coordinates[1],
+                      lon: shopOrder?.assignedDeliveryPerson?.location
+                        ?.coordinates[0],
+                    },
 
-                  customerLocation: {
-                    lat: currentOrder?.deliveryAddress?.latitude,
-                    lon: currentOrder?.deliveryAddress?.longitude,
-                  },
-                }}
-              />
-            </div>
-          )}
+                    customerLocation: {
+                      lat: currentOrder?.deliveryAddress?.latitude,
+                      lon: currentOrder?.deliveryAddress?.longitude,
+                    },
+                  }}
+                />
+              </div>
+            )}
         </div>
       ))}
     </div>
