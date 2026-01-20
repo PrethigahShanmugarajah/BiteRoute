@@ -205,10 +205,28 @@ export const verifyOtp = async (req, res) => {
     //     .json({ success: false, message: "Invalid or expired OTP." });
     // }
 
-    if (user.resetOtp !== otp.trim() || user.otpExpires < Date.now()) {
+    // if (user.resetOtp !== otp.trim() || user.otpExpires < Date.now()) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Invalid or expired OTP." });
+    // }
+
+    if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid or expired OTP." });
+        .json({ success: false, message: "User not found." });
+    }
+
+    if (user.resetOtp !== otp) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect OTP." });
+    }
+
+    if (!user.otpExpires || user.otpExpires < Date.now()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP has expired." });
     }
 
     user.isOtpVerified = true;
