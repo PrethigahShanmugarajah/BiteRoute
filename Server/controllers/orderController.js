@@ -3,6 +3,7 @@ import DeliveryAssignment from "../models/deliveryAssignmentModel.js";
 import Order from "../models/orderModel.js";
 import Shop from "../models/shopModel.js";
 import User from "../models/userModel.js";
+import { sendDeliveryOtpMail } from "../utils/mail.js";
 
 /* -------- Place Order -------- */
 export const placeOrder = async (req, res) => {
@@ -478,6 +479,49 @@ export const getOrderById = async (req, res) => {
       success: false,
       message: "Failed to get order",
       error: `Get Order By Id Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Send Delivery OTP -------- */
+export const sendDeliveryOtp = async (req, res) => {
+  try {
+    const { orderId, shopOrderId } = req.body;
+    const order = await Order.findById(orderId).populate("user");
+    const shopOrder = order.shopOrders.id(shopOrderId);
+
+    if (!order || !shopOrder) {
+      return res.status(400).json({
+        success: false,
+        message: "Enter valid order ID or shop order ID",
+      });
+    }
+
+    if (!order.user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found for this order" });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    shopOrder.deliveryOtp = otp;
+    shopOrder.otpExpires = Date.now() + 5 * 60 * 1000;
+
+    await order.save();
+    await sendDeliveryOtpMail(order.user, otp);
+
+    return res.status(200).json({
+      success: true,
+      message: `OTP sent successfully to ${order?.user.fullName}`,
+      otp,
+    });
+  } catch (error) {
+    console.error("Send Delivery OTP Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send delivery OTP",
+      error: `Send Delivery OTP Error: ${error.message}`,
     });
   }
 };
