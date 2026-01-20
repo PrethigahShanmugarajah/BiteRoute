@@ -239,14 +239,12 @@ export const getItemsByShop = async (req, res) => {
       });
     }
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Items fetched successfully!",
-        shop,
-        items: shop.items,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Items fetched successfully!",
+      shop,
+      items: shop.items,
+    });
   } catch (error) {
     console.error("Get Items By Shop Error:", error.message);
 
@@ -254,6 +252,48 @@ export const getItemsByShop = async (req, res) => {
       success: false,
       message: "Failed to get items by shop",
       error: `Get Items By Shop Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Search Items -------- */
+export const searchItems = async (req, res) => {
+  try {
+    const { query, city } = req.query;
+    if (!query || !city) {
+      null;
+    }
+
+    const shops = await Shop.find({
+      city: { $regex: new RegExp(`^${city}$`, "i") },
+    }).populate("items");
+
+    if (!shops) {
+      return res.status(404).json({
+        success: false,
+        message: "Shops not found.",
+      });
+    }
+
+    const shopIds = shops.map((s) => s._id);
+    const items = await Item.find({
+      shop: { $in: shopIds },
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    }).populate("shop", "name image");
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Items fetched successfully!", items });
+  } catch (error) {
+    console.error("Search Items Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search items",
+      error: `Search Items Error: ${error.message}`,
     });
   }
 };
