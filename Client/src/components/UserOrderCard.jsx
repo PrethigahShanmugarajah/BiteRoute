@@ -1,4 +1,5 @@
 // BiteRoute / Client / src / components / UserOrderCard.jsx
+import { useNavigate } from "react-router-dom";
 import {
   capitalizeAll,
   capitalizeFirstLetter,
@@ -7,6 +8,8 @@ import {
 import Button from "./Button";
 
 const UserOrderCard = ({ data }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
       <div className="flex justify-between border-b pb-2 border-gray-300">
@@ -65,7 +68,12 @@ const UserOrderCard = ({ data }) => {
 
       <div className="flex justify-between items-center border-t border-gray-300 pt-2">
         <p className="font-semibold">Total: {data.totalAmount}</p>
-        <Button className="px-4! text-sm">Track Order</Button>
+        <Button
+          className="px-4! text-sm"
+          onClick={() => navigate(`/track-order/${data._id}`)}
+        >
+          Track Order
+        </Button>
       </div>
     </div>
   );
