@@ -542,14 +542,22 @@ export const verifyDeliveryOtp = async (req, res) => {
         .json({ success: false, message: "Enter valid order / shopOrder ID" });
     }
 
-    if (
-      shopOrder.deliveryOtp !== otp ||
-      !shopOrder.otpExpires ||
-      shopOrder.otpExpires < Date.now()
-    ) {
+    if (!shopOrder.deliveryOtp) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid or expired OTP." });
+        .json({ success: false, message: "OTP not generated yet." });
+    }
+
+    if (shopOrder.deliveryOtp !== otp) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect OTP." });
+    }
+
+    if (!shopOrder.otpExpires || shopOrder.otpExpires < Date.now()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP has expired." });
     }
 
     shopOrder.status = "delivered";
