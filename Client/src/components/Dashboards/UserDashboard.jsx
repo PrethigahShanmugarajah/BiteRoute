@@ -21,16 +21,29 @@ const UserDashboard = () => {
   const [showRightShopButton, setShowRightShopButton] = useState(false);
   const [showLeftShopButton, setShowLeftShopButton] = useState(false);
 
+  const [updatedItemsList, setUpdatedItemsList] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleFilterByCategory = (category) => {
+    setSelectedCategory(category);
+
+    if (category == "All") {
+      setUpdatedItemsList(itemsInMyCity);
+    } else {
+      const filteredList = itemsInMyCity?.filter((i) => i.category == category);
+      setUpdatedItemsList(filteredList);
+    }
+  };
+
+  useEffect(() => {
+    setUpdatedItemsList(itemsInMyCity);
+  }, [itemsInMyCity]);
+
   const updateButton = (ref, setLeftButton, setLeftRightButton) => {
     const element = ref.current;
 
     if (element) {
-      // console.log(element.scrollLeft);
       setLeftButton(element.scrollLeft > 0);
-
-      // console.log("Client Width:", element.clientWidth);
-      // console.log("Scroll Width:", element.scrollWidth);
-      // console.log("Scroll Left:", element.scrollLeft);
 
       setLeftRightButton(
         element.scrollLeft + element.clientWidth < element.scrollWidth
@@ -124,6 +137,8 @@ const UserDashboard = () => {
                 name={cate.category}
                 image={cate.image}
                 key={index}
+                onClick={() => handleFilterByCategory(cate.category)}
+                selected={selectedCategory === cate.category}
               />
             ))}
           </div>
@@ -181,7 +196,7 @@ const UserDashboard = () => {
       </div>
 
       <div className="w-full h-auto flex flex-wrap gap-5 justify-center mb-4">
-        {itemsInMyCity?.map((item, index) => (
+        {updatedItemsList?.map((item, index) => (
           <FoodCard key={index} data={item} />
         ))}
       </div>
