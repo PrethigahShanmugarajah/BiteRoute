@@ -9,9 +9,8 @@ import FoodCard from "../FoodCard";
 import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
-  const { currentCity, shopsInMyCity, itemsInMyCity } = useSelector(
-    (state) => state.user
-  );
+  const { currentCity, shopsInMyCity, itemsInMyCity, searchItems } =
+    useSelector((state) => state.user);
 
   const cateScrollRef = useRef();
   const shopScrollRef = useRef();
@@ -115,6 +114,20 @@ const UserDashboard = () => {
   return (
     <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-bg overflow-y-auto">
       <Nav />
+
+      {searchItems && searchItems.length > 0 && (
+        <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-5 bg-white shadow-md rounded-2xl mt-4">
+          <h1 className="text-black text-2xl sm:text-3xl font-semibold pb-2">
+            Search Results
+          </h1>
+
+          <div className="w-full h-auto flex flex-wrap gap-6 justify-center">
+            {searchItems?.map((item) => (
+              <FoodCard data={item} key={item._id} />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-black text-2xl sm:text-3xl">
