@@ -1,16 +1,16 @@
 // BiteRoute / Client / src / components / Nav.jsx
+import { useEffect, useState } from "react";
 import { FaLocationDot, FaPlus } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
 import { FiShoppingCart } from "react-icons/fi";
 import Button from "./Button";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
 import { toast } from "react-toastify";
 import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
-import { setUserData } from "../redux/userSlice";
+import { setSearchItems, setUserData } from "../redux/userSlice";
 import { TbReceipt2 } from "react-icons/tb";
 import { useForm } from "react-hook-form";
 import { Input } from "./FormInputs";
@@ -25,6 +25,7 @@ const Nav = () => {
 
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  // const [query, setQuery] = useState(" ");
 
   const dispatch = useDispatch();
 
@@ -35,9 +36,6 @@ const Nav = () => {
       search: "",
     },
   });
-
-  const searchValue = watch("search");
-  console.log("Live Search Value:", searchValue);
 
   const handleLogout = async () => {
     try {
@@ -59,6 +57,46 @@ const Nav = () => {
       console.log("Sign Out Error:", error);
     }
   };
+
+  const handleSearchItems = async (value) => {
+    try {
+      const { data } = await api.get(
+        API_ROUTES.ITEM.ITEM_SEARCH(value, currentCity),
+        { withCredentials: true }
+      );
+
+      console.log("Fetch Search Items API Response:", data);
+
+      if (data.success) {
+        console.log("Fetch Search Items Success:", data.message);
+        dispatch(setSearchItems(data.items));
+        console.log("Dispatch Search Items:", data.items);
+      } else {
+        toast.error(data.message);
+        console.log("Fetch Search Items Data Error:", data.message);
+        dispatch(setSearchItems(null));
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Fetch Search Items Error:", error);
+    }
+  };
+
+  const searchValue = watch("search");
+  console.log("Live Search Value:", searchValue);
+
+  useEffect(() => {
+    if (!searchValue || searchValue.trim() === "") {
+      dispatch(setSearchItems(null));
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      handleSearchItems(searchValue);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchValue, currentCity, dispatch]);
 
   return (
     <div className="w-full h-20 flex items-center justify-between md:justify-center gap-7.5 px-5 fixed top-0 z-9999 bg-bg overflow-visible">
@@ -201,9 +239,6 @@ const Nav = () => {
             >
               <TbReceipt2 size={20} />
               <span>My Orders</span>
-              {/* <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
-                0
-              </span> */}
             </div>
 
             <div
@@ -211,9 +246,6 @@ const Nav = () => {
               onClick={() => navigate("/my-orders")}
             >
               <TbReceipt2 size={20} />
-              {/* <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
-                0
-              </span> */}
             </div>
           </>
         )}
