@@ -1,10 +1,6 @@
 // BiteRoute / Client / src / components / UserOrderCard.jsx
 import { useNavigate } from "react-router-dom";
-import {
-  capitalizeAll,
-  capitalizeFirstLetter,
-  formatDate,
-} from "../utils/helper";
+import { capitalizeAll, capitalizeWords, formatDate } from "../utils/helper";
 import Button from "./Button";
 
 const UserOrderCard = ({ data }) => {
@@ -25,7 +21,7 @@ const UserOrderCard = ({ data }) => {
             {capitalizeAll(data.paymentMethod)}
           </p>
           <p className="font-medium text-blue-600">
-            {capitalizeFirstLetter(data.shopOrders?.[0].status)}
+            {capitalizeWords(data.shopOrders?.[0].status)}
           </p>
         </div>
       </div>
@@ -60,7 +56,7 @@ const UserOrderCard = ({ data }) => {
           <div className="flex justify-between items-center border-t border-gray-300 pt-2">
             <p className="font-semibold">Subtotal: LKR {shopOrder.subtotal}</p>
             <span className="text-sm font-medium text-blue-600">
-              {capitalizeFirstLetter(shopOrder.status)}
+              {capitalizeWords(shopOrder.status)}
             </span>
           </div>
         </div>
