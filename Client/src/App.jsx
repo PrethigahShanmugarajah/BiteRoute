@@ -21,6 +21,7 @@ import MyOrders from "./pages/MyOrders";
 import useGetMyOrders from "./hooks/useGetMyOrders";
 import useUpdateLocation from "./hooks/useUpdateLocation";
 import TrackingOrderPage from "./pages/TrackingOrderPage";
+import Shop from "./pages/Shop";
 
 const App = () => {
   useGetCurrentUser();
@@ -97,6 +98,11 @@ const App = () => {
           element={
             userData ? <TrackingOrderPage /> : <Navigate to={"/signin"} />
           }
+        />
+
+        <Route
+          path="/shop/:shopId"
+          element={userData ? <Shop /> : <Navigate to={"/signin"} />}
         />
       </Routes>
     </>
