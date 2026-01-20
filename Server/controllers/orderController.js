@@ -525,3 +525,68 @@ export const sendDeliveryOtp = async (req, res) => {
     });
   }
 };
+
+/* -------- Verify Delivery OTP -------- */
+export const verifyDeliveryOtp = async (req, res) => {
+  try {
+    const { orderId, shopOrderId, otp } = req.body;
+    const order = await Order.findById(orderId)
+      .populate("user")
+      .populate("shopOrders.assignedDeliveryPerson");
+
+    const shopOrder = order.shopOrders.id(shopOrderId);
+
+    if (!order || !shopOrder) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Enter valid order / shopOrder ID" });
+    }
+
+    if (
+      shopOrder.deliveryOtp !== otp ||
+      !shopOrder.otpExpires ||
+      shopOrder.otpExpires < Date.now()
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid or expired OTP." });
+    }
+
+    shopOrder.status = "delivered";
+    shopOrder.deliveredAt = Date.now();
+    await order.save();
+
+    await DeliveryAssignment.deleteOne({
+      shopOrderId: shopOrder._id,
+      order: order._id,
+      assignedTo: shopOrder.assignedDeliveryPerson,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Order delivered successfully!",
+      deliveryDetails: {
+        deliveryPerson: {
+          name: shopOrder.assignedDeliveryPerson.fullName,
+          mobile: shopOrder.assignedDeliveryPerson.mobile,
+        },
+        customer: {
+          name: order.user.fullName,
+          mobile: order.user.mobile,
+        },
+        deliveryAddress: order.deliveryAddress.text,
+      },
+      orderId: order._id,
+      shopOrderId: shopOrder._id,
+      deliveredAt: shopOrder.deliveredAt,
+    });
+  } catch (error) {
+    console.error("Verify Delivery OTP Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify delivery OTP",
+      error: `Verify Delivery OTP Error: ${error.message}`,
+    });
+  }
+};
