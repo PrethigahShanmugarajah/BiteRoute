@@ -17,11 +17,17 @@ const DeliveryPerson = () => {
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [currentOrder, setCurrentOrder] = useState();
   const [showOtpBox, setShowOtpBox] = useState(false);
+  // const [otp, setOtp] = useState("");
 
   const {
     control,
+    handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      otp: "",
+    },
+  });
 
   const getAssignments = async () => {
     try {
@@ -67,9 +73,7 @@ const DeliveryPerson = () => {
     }
   };
 
-  const handleSendOtp = (e) => {
-    setShowOtpBox(true);
-  };
+  const handleSendOtp = (e) => {};
 
   const acceptOrder = async (assignmentId) => {
     try {
@@ -93,6 +97,60 @@ const DeliveryPerson = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Accept Order Error:", error);
+    }
+  };
+
+  const sendOtp = async () => {
+    console.log("Sending OTP for order:", currentOrder);
+
+    try {
+      const { data } = await api.post(
+        API_ROUTES.ORDER.ORDER_SEND_DELIVERY_OTP,
+        { orderId: currentOrder._id, shopOrderId: currentOrder.shopOrder._id },
+        { withCredentials: true }
+      );
+
+      console.log("Send OTP API Response:", data);
+
+      if (data.success) {
+        toast.success(data.message);
+        console.log("Send OTP Success:", data.message);
+
+        setShowOtpBox(true);
+      } else {
+        toast.error(data.message);
+        console.log("Send OTP Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Send OTP Error:", error);
+    }
+  };
+
+  const verifyOtp = async (formData) => {
+    try {
+      const { data } = await api.post(
+        API_ROUTES.ORDER.ORDER_VERIFY_DELIVERY_OTP,
+        {
+          orderId: currentOrder._id,
+          shopOrderId: currentOrder.shopOrder._id,
+          otp: formData.otp,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Verify OTP API Response:", data);
+
+      if (data.success) {
+        toast.success(data.message);
+        console.log("Verify OTP Success:", data.message);
+      } else {
+        toast.error(data.message);
+        console.log("Verify OTP Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Verify OTP Error:", error);
     }
   };
 
@@ -185,7 +243,7 @@ const DeliveryPerson = () => {
               <Button
                 className="mt-4 w-full bg-green-500 text-white  hover:bg-green-600"
                 variant="custom"
-                onClick={handleSendOtp}
+                onClick={sendOtp}
               >
                 Mark As Delivered
               </Button>
@@ -198,12 +256,6 @@ const DeliveryPerson = () => {
                   </span>
                 </p>
 
-                {/* <input
-                  type="text"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                  placeholder="Enter OTP"
-                /> */}
-
                 <Input
                   label="OTP"
                   name="otp"
@@ -214,7 +266,9 @@ const DeliveryPerson = () => {
                   errors={errors}
                 />
 
-                <Button className="w-full">Submit OTP</Button>
+                <Button className="w-full" onClick={handleSubmit(verifyOtp)}>
+                  Submit OTP
+                </Button>
               </div>
             )}
           </div>
