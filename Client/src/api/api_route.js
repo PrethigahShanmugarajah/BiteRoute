@@ -11,15 +11,18 @@ const API_ROUTES = {
     AUTH_RESET_PASSWORD: `${BASE_URL}/api/auth/reset-password`,
     AUTH_GOOGLE_AUTH: `${BASE_URL}/api/auth/google-auth`,
   },
+
   USER: {
     USER_GET: `${BASE_URL}/api/user/userget`,
     USER_UPDATE_LOCATION: `${BASE_URL}/api/user/update-location`,
   },
+
   SHOP: {
     SHOP_CREATE_EDIT: `${BASE_URL}/api/shop/create-edit`,
     SHOP_GET_MY: `${BASE_URL}/api/shop/get-shop`,
     SHOP_GET_BY_CITY: (city) => `${BASE_URL}/api/shop/get-shop-by-city/${city}`,
   },
+
   ITEM: {
     ITEM_ADD: `${BASE_URL}/api/item/add-item`,
     ITEM_UPDATE: (itemId) => `${BASE_URL}/api/item/update-item/${itemId}`,
@@ -27,7 +30,10 @@ const API_ROUTES = {
     ITEM_DELETE: (itemId) => `${BASE_URL}/api/item/delete-item/${itemId}`,
     ITEM_GET_BY_CITY: (city) =>
       `${BASE_URL}/api/item/get-item-shop-by-city/${city}`,
+    ITEM_GET_BY_SHOP: (shopId) =>
+      `${BASE_URL}/api/item/get-item-by-shop/${shopId}`,
   },
+
   ORDER: {
     ORDER_PLACE: `${BASE_URL}/api/order/place-order`,
     ORDER_MY_GET: `${BASE_URL}/api/order/my-orders`,
