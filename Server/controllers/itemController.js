@@ -225,3 +225,35 @@ export const getItemByCity = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Items By Shop -------- */
+export const getItemsByShop = async (req, res) => {
+  try {
+    const { shopId } = req.params;
+    const shop = await Shop.findById(shopId).populate("items");
+
+    if (!shop) {
+      return res.status(404).json({
+        success: false,
+        message: "Shop not found.",
+      });
+    }
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Items fetched successfully!",
+        shop,
+        items: shop.items,
+      });
+  } catch (error) {
+    console.error("Get Items By Shop Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get items by shop",
+      error: `Get Items By Shop Error: ${error.message}`,
+    });
+  }
+};
