@@ -6,6 +6,7 @@ import Nav from "../Nav";
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import FoodCard from "../FoodCard";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const { currentCity, shopsInMyCity, itemsInMyCity } = useSelector(
@@ -14,6 +15,8 @@ const UserDashboard = () => {
 
   const cateScrollRef = useRef();
   const shopScrollRef = useRef();
+
+  const navigate = useNavigate();
 
   const [showRightCateButton, setShowRightCateButton] = useState(false);
   const [showLeftCateButton, setShowLeftCateButton] = useState(false);
@@ -174,7 +177,12 @@ const UserDashboard = () => {
             ref={shopScrollRef}
           >
             {shopsInMyCity?.map((shop, index) => (
-              <CategoryCard name={shop.name} image={shop.image} key={index} />
+              <CategoryCard
+                name={shop.name}
+                image={shop.image}
+                key={index}
+                onClick={() => navigate(`/shop/${shop._id}`)}
+              />
             ))}
           </div>
 
