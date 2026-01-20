@@ -457,7 +457,7 @@ export const getOrderById = async (req, res) => {
     const order = await Order.findById(orderId)
       .populate("user")
       .populate({ path: "shopOrders.shop", model: "Shop" })
-      .populate({ path: "shopOrders.assignedDeliveryPerson", model: "Shop" })
+      .populate({ path: "shopOrders.assignedDeliveryPerson", model: "User" })
       .populate({ path: "shopOrders.shopOrderItems.item", model: "Item" })
       .lean();
 
