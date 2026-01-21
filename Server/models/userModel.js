@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema(
     otpExpires: {
       type: Date,
     },
+    socketId: {
+      type: String,
+    },
     location: {
       type: {
         type: String,
@@ -46,7 +49,7 @@ const userSchema = new mongoose.Schema(
       },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.index({ location: "2dsphere" });
