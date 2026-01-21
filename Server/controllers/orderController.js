@@ -17,7 +17,8 @@ var instance = new Razorpay({
 /* -------- Place Order -------- */
 export const placeOrder = async (req, res) => {
   try {
-    const { cartItems, paymentMethod, deliveryAddress } = req.body;
+    // const { cartItems, paymentMethod, deliveryAddress } = req.body;
+    const { cartItems, paymentMethod, deliveryAddress, deliveryFee } = req.body;
 
     if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ success: false, message: "Cart is empty" });
@@ -73,14 +74,22 @@ export const placeOrder = async (req, res) => {
       }),
     );
 
-    const totalAmount = shopOrders.reduce(
+    // const totalAmount = shopOrders.reduce(
+    //   (sum, order) => sum + order.subtotal,
+    //   0,
+    // );
+
+    const itemsTotal = shopOrders.reduce(
       (sum, order) => sum + order.subtotal,
       0,
     );
 
+    const finalAmount = itemsTotal + Number(deliveryFee || 0);
+
     if (paymentMethod == "online") {
-      const razorOrder = instance.orders.create({
-        amount: Math.round(totalAmount * 100),
+      const razorOrder = await instance.orders.create({
+        // amount: Math.round(totalAmount * 100),
+        amount: Math.round(finalAmount * 100),
         currency: "INR",
         receipt: `receipt_${Date.now()}`,
       });
@@ -89,7 +98,8 @@ export const placeOrder = async (req, res) => {
         user: req.userId,
         paymentMethod,
         deliveryAddress,
-        totalAmount,
+        // totalAmount,
+        totalAmount: finalAmount,
         shopOrders,
         razorpayOrderId: razorOrder.id,
         payment: false,
@@ -100,7 +110,6 @@ export const placeOrder = async (req, res) => {
         message: "Order created successfully. Please complete the payment.",
         razorOrder,
         orderId: newOrder._id,
-        key_id: process.env.RAZORPAY_KEY_ID,
       });
     }
 
@@ -219,6 +228,7 @@ export const getMyOrders = async (req, res) => {
         shopOrders: order.shopOrders.find((o) => o.owner._id == req.userId),
         createdAt: order.createdAt,
         deliveryAddress: order.deliveryAddress,
+        payment: order.payment,
       }));
 
       return res.status(200).json({
