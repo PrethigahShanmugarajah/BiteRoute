@@ -133,6 +133,61 @@ export const placeOrder = async (req, res) => {
   }
 };
 
+/* -------- Verify Payment -------- */
+export const verifyPayment = async (req, res) => {
+  try {
+    const { razorpay_payment_id, orderId } = req.body;
+    const payment = await instance.payments.fetch(razorpay_payment_id);
+
+    // if (!payment || payment.status != "captured") {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Payment not captured." });
+    // }
+
+    if (!payment) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Payment not found." });
+    }
+
+    if (payment.status !== "captured") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Payment not captured." });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    order.payment = true;
+    order.razorPaymentId = razorpay_payment_id;
+    await order.save();
+
+    await order.populate("shopOrders.shopOrderItems.item", "name image price");
+    await order.populate("shopOrders.shop", "name");
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment verified successfully!",
+      order,
+    });
+  } catch (error) {
+    console.error("Verify Payment Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify payment",
+      error: `Verify Payment Error: ${error.message}`,
+    });
+  }
+};
+
 /* -------- Get My Orders -------- */
 export const getMyOrders = async (req, res) => {
   try {
