@@ -1,11 +1,12 @@
 // BiteRoute / Client / src / App.jsx
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./pages/ForgotPassword";
 import useGetCurrentUser from "./hooks/useGetCurrentUser";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Home from "./pages/Home";
 import useGetCity from "./hooks/useGetCity";
 import useGetMyShop from "./hooks/useGetMyShop";
@@ -22,8 +23,13 @@ import useGetMyOrders from "./hooks/useGetMyOrders";
 import useUpdateLocation from "./hooks/useUpdateLocation";
 import TrackingOrderPage from "./pages/TrackingOrderPage";
 import Shop from "./pages/Shop";
+import { setSocket } from "./redux/userSlice";
+import { io } from "socket.io-client";
 
 const App = () => {
+  const { userData } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   useGetCurrentUser();
   useUpdateLocation();
   useGetCity();
@@ -32,7 +38,24 @@ const App = () => {
   useGetItemsByCity();
   useGetMyOrders();
 
-  const { userData } = useSelector((state) => state.user);
+  useEffect(() => {
+    const socketInstance = io(import.meta.env.VITE_BASEURL, {
+      withCredentials: true,
+    });
+
+    dispatch(setSocket(socketInstance));
+    console.log("Socket:", socketInstance);
+
+    socketInstance.on("connect", () => {
+      if (userData) {
+        socketInstance.emit("identity", { userId: userData._id });
+      }
+    });
+
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, [userData?._id]);
 
   return (
     <>
