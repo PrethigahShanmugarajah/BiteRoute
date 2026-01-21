@@ -117,7 +117,9 @@ export const placeOrder = async (req, res) => {
       user: req.userId,
       paymentMethod,
       deliveryAddress,
-      totalAmount,
+      // totalAmount,
+      totalAmount: finalAmount,
+      deliveryFee: Number(deliveryFee || 0),
       shopOrders,
     });
 
@@ -125,8 +127,29 @@ export const placeOrder = async (req, res) => {
       "shopOrders.shopOrderItems.item",
       "name image price",
     );
-
     await newOrder.populate("shopOrders.shop", "name");
+    await newOrder.populate("shopOrders.shop", "name socketId");
+    await newOrder.populate("user", "name email");
+
+    const io = req.app.get("io");
+
+    if (io) {
+      newOrder.shopOrders.forEach((shopOrder) => {
+        const ownerSocketId = shopOrder.owner.socketId;
+
+        if (ownerSocketId) {
+          io.io(ownerSocketId).emit("newOrder", {
+            _id: newOrder._id,
+            paymentMethod: newOrder.paymentMethod,
+            user: newOrder.user,
+            shopOrders: shopOrder,
+            createdAt: newOrder.createdAt,
+            deliveryAddress: newOrder.deliveryAddress,
+            payment: newOrder.payment,
+          });
+        }
+      });
+    }
 
     return res
       .status(201)
@@ -179,7 +202,29 @@ export const verifyPayment = async (req, res) => {
     await order.save();
 
     await order.populate("shopOrders.shopOrderItems.item", "name image price");
-    await order.populate("shopOrders.shop", "name");
+    await newOrder.populate("shopOrders.shop", "name");
+    await newOrder.populate("shopOrders.shop", "name socketId");
+    await newOrder.populate("user", "name email");
+
+    const io = req.app.get("io");
+
+    if (io) {
+      newOrder.shopOrders.forEach((shopOrder) => {
+        const ownerSocketId = shopOrder.owner.socketId;
+
+        if (ownerSocketId) {
+          io.io(ownerSocketId).emit("newOrder", {
+            _id: order._id,
+            paymentMethod: order.paymentMethod,
+            user: order.user,
+            shopOrders: shopOrder,
+            createdAt: order.createdAt,
+            deliveryAddress: order.deliveryAddress,
+            payment: order.payment,
+          });
+        }
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -229,6 +274,7 @@ export const getMyOrders = async (req, res) => {
         createdAt: order.createdAt,
         deliveryAddress: order.deliveryAddress,
         payment: order.payment,
+        totalAmount: order.totalAmount || 0,
       }));
 
       return res.status(200).json({
@@ -274,6 +320,7 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     shopOrder.status = status;
+
     let deliveryPersonsPayload = [];
 
     if (status == "out of delivery" || !shopOrder.assignment) {
@@ -332,6 +379,34 @@ export const updateOrderStatus = async (req, res) => {
         latitude: b.location.coordinates?.[1],
         mobile: b.mobile,
       }));
+
+      await deliveryAssignment.populate("order");
+      await deliveryAssignment.populate("shop");
+
+      const io = req.app.get("io");
+      if (io) {
+        availablePersons.forEach((person) => {
+          const personSocketId = person.socketId;
+          if (personSocketId) {
+            io.to(personSocketId).emit("newAssignment", {
+              sendTo: person._id,
+              assignmentId: deliveryAssignment._id,
+              status: deliveryAssignment.status,
+              orderId: deliveryAssignment.order._id,
+              shopName: deliveryAssignment.shop.name,
+              deliveryAddress: deliveryAssignment.order.deliveryAddress,
+              items:
+                deliveryAssignment.order.shopOrders.find((so) =>
+                  so._id.equals(deliveryAssignment.shopOrderId),
+                )?.shopOrderItems || [],
+              subtotal:
+                deliveryAssignment.order.shopOrders.find((so) =>
+                  so._id.equals(deliveryAssignment.shopOrderId),
+                )?.subtotal || [],
+            });
+          }
+        });
+      }
     }
 
     await shopOrder.save();
@@ -344,6 +419,20 @@ export const updateOrderStatus = async (req, res) => {
       "shopOrders.assignedDeliveryPerson",
       "fullName email mobile",
     );
+    await order.populate("user", "socketId");
+
+    const io = req.app.get("io");
+    if (io) {
+      const userSocketId = order.user.socketId;
+      if (userSocketId) {
+        io.to(userSocketId).emit("update-status", {
+          orderId: order._id,
+          shopId: updatedShopOrder.shop._id,
+          status: updatedShopOrder.status,
+          userId: order.user._id,
+        });
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -394,6 +483,7 @@ export const getDeliveryPersonAssignment = async (req, res) => {
       subtotal:
         a.order.shopOrders.find((so) => so._id.equals(a.shopOrderId))
           ?.subtotal || [],
+      totalAmount: a.order.totalAmount || 0,
     }));
 
     return res.status(200).json({
@@ -538,6 +628,7 @@ export const getCurrentOrder = async (req, res) => {
       user: assignment.order.user,
       shopOrder,
       deliveryAddress: assignment.order.deliveryAddress,
+      totalAmount: assignment.order.totalAmount || 0,
       deliveryPersonLocation,
       customerLocation,
     });
