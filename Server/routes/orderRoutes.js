@@ -11,11 +11,13 @@ import {
   sendDeliveryOtp,
   updateOrderStatus,
   verifyDeliveryOtp,
+  verifyPayment,
 } from "../controllers/orderController.js";
 
 const orderRouter = express.Router();
 
 orderRouter.post("/place-order", isAuth, placeOrder);
+orderRouter.post("/verify-payment", isAuth, verifyPayment);
 orderRouter.get("/my-orders", isAuth, getMyOrders);
 orderRouter.post("/update-status/:orderId/:shopId", isAuth, updateOrderStatus);
 orderRouter.get("/get-assignments", isAuth, getDeliveryPersonAssignment);
