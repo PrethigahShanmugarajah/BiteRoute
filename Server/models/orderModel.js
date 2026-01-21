@@ -12,7 +12,7 @@ const shopOrderItemsSchema = new mongoose.Schema(
     price: Number,
     quantity: Number,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const shopOrderSchema = new mongoose.Schema(
@@ -54,7 +54,7 @@ const shopOrderSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const orderSchema = new mongoose.Schema(
@@ -77,8 +77,20 @@ const orderSchema = new mongoose.Schema(
       type: Number,
     },
     shopOrders: [shopOrderSchema],
+    payment: {
+      type: Boolean,
+      default: false,
+    },
+    razorpayOrderId: {
+      type: String,
+      default: "",
+    },
+    razorPaymentId: {
+      type: String,
+      default: "",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Order = mongoose.model("Order", orderSchema);
