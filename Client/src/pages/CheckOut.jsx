@@ -30,7 +30,7 @@ const CheckOut = () => {
 
   const { location, address } = useSelector((state) => state.map);
   const { cartItems, totalAmount, userData } = useSelector(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const [addressInput, setAddressInput] = useState("");
@@ -59,13 +59,13 @@ const CheckOut = () => {
   const getAddressByLatLng = async (lat, lng) => {
     try {
       const { data } = await api.get(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&format=json&apiKey=${apiKey}`
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&format=json&apiKey=${apiKey}`,
       );
 
       dispatch(setAddress(data?.results[0]?.address_line2));
       console.log(
         "Get Address By Latitude Longitude:",
-        data?.results[0]?.address_line2
+        data?.results[0]?.address_line2,
       );
     } catch (error) {
       console.log("Get Current Address Error:", error);
@@ -76,8 +76,8 @@ const CheckOut = () => {
     try {
       const { data } = await api.get(
         `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
-          addressInput
-        )}&apiKey=${apiKey}`
+          addressInput,
+        )}&apiKey=${apiKey}`,
       );
 
       const { lat, lon } = data?.features[0]?.properties || {};
@@ -88,7 +88,7 @@ const CheckOut = () => {
 
       console.log(
         "Get Latitude, Longitude By Address:",
-        data.features[0].properties
+        data.features[0].properties,
       );
     } catch (error) {
       console.log("Get Current Address Error:", error);
@@ -101,40 +101,86 @@ const CheckOut = () => {
         API_ROUTES.ORDER.ORDER_PLACE,
         {
           paymentMethod,
+          deliveryFee,
           deliveryAddress: {
             text: addressInput,
             latitude: location.lat,
             longitude: location.lon,
           },
-          totalAmount,
+          totalAmount: AmountWithDeliveryFee,
+          // cartItems,
           cartItems,
+          deliveryFee,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true },
       );
 
-      if (data.success) {
-        toast.success(data?.message);
-        console.log("Place Order Success:", data?.message);
+      if (paymentMethod == "cod") {
+        if (data.success) {
+          toast.success(data?.message);
+          console.log("COD Place Order Success:", data?.message);
 
-        dispatch(addMyOrders(data));
-        console.log("Add My Orders Dispatch:", addMyOrders(data));
+          dispatch(addMyOrders(data));
+          console.log("Add My COD Orders Dispatch:", addMyOrders(data));
 
-        navigate("/order-placed");
+          navigate("/order-placed");
+        } else {
+          toast.warn(data?.message);
+          console.log("COD Place Order Data Error:", data?.message);
+        }
       } else {
-        toast.warn(data?.message);
-        console.log("Place Order Data Error:", data?.message);
+        const orderId = data.orderId;
+        const razorOrder = data.razorOrder;
+        openRazorpayWindow(orderId, razorOrder);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
-      console.log("Place Order Error:", error);
+      console.log("COD Place Order Error:", error);
     }
+  };
+
+  const openRazorpayWindow = (orderId, razorOrder) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: razorOrder.amount,
+      currency: "INR",
+      name: "BiteRoute",
+      description: "Food Delivery Website",
+      order_id: razorOrder.id,
+      handler: async function (response) {
+        try {
+          const { data } = await api.post(
+            API_ROUTES.ORDER.ORDER_VERIFY_PAYMENT,
+            { razorpay_payment_id: response.razorpay_payment_id, orderId },
+            { withCredentials: true },
+          );
+
+          if (data.success) {
+            toast.success(data?.message);
+            console.log("Online Place Order Success:", data?.message);
+
+            dispatch(addMyOrders(data));
+            console.log("Add My Online Orders Dispatch:", addMyOrders(data));
+
+            navigate("/order-placed");
+          } else {
+            toast.warn(data?.message);
+            console.log("Online Place Order Data Error:", data?.message);
+          }
+        } catch (error) {
+          toast.error(error?.response?.data?.message || error?.message);
+          console.log("Online Place Order Error:", error);
+        }
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   };
 
   useEffect(() => {
     setAddressInput(address);
-  }, []);
+  }, [address]);
 
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-6">
@@ -207,7 +253,7 @@ const CheckOut = () => {
             Payment Method
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 cursor-pointer">
             <div
               className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${
                 paymentMethod === "cod"
