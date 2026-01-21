@@ -38,28 +38,27 @@ const OwnerOrderCard = ({ data }) => {
 
   const handleUpdateStatus = async (orderId, shopId, status) => {
     try {
-      const data = await api.post(
+      const response = await api.post(
         API_ROUTES.ORDER.ORDER_UPDATE_STATUS(orderId, shopId),
         { status },
         { withCredentials: true },
       );
 
-      console.log("Order Update Status API Response:", data.data);
+      console.log("Order Update Status API Response:", response.data);
 
-      if (data.data.success) {
-        toast.success(data.data.message);
-        console.log("Order Update Status Success:", data.data.message);
-
+      if (response.data.success) {
+        toast.success(response.data.message);
+        console.log("Order Update Status Success:", response.data.message);
         dispatch(updateOrderStatus({ orderId, shopId, status }));
         console.log("Order Update Status Dispatch:", {
           orderId,
           shopId,
           status,
         });
-        setAvailablePersons(data.availablePersons);
+        setAvailablePersons(response.data.availablePersons);
       } else {
         toast.warn(data.data.message);
-        console.log("Order Update Status Data Error:", data.data.message);
+        console.log("Order Update Status Data Error:", response.data.message);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
@@ -153,7 +152,7 @@ const OwnerOrderCard = ({ data }) => {
         />
       </div>
 
-      {data.shopOrders.status == "out of delivery" && (
+      {/* {data.shopOrders.status == "out of delivery" && (
         <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
           {data.shopOrders.assignedDeliveryPerson ? (
             <p>Assigned Delivery Person:</p>
@@ -175,10 +174,55 @@ const OwnerOrderCard = ({ data }) => {
             <div>Waiting for delivery person to accept</div>
           )}
         </div>
+      )} */}
+
+      {data.shopOrders.status == "out of delivery" && (
+        <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
+          {data.shopOrders.assignedDeliveryPerson ? (
+            <p>Assigned Delivery Person:</p>
+          ) : (
+            <p>Available Delivery Persons:</p>
+          )}
+          {availablePersons?.length > 0 ? (
+            availablePersons?.map((b, index) => (
+              <div
+                key={index}
+                className="text-black py-2 border-b border-gray-300 last:border-b-0"
+              >
+                <p className="font-semibold">
+                  {capitalizeWords(b.fullName)} - {b.mobile}
+                </p>
+              </div>
+            ))
+          ) : data.shopOrders.assignedDeliveryPerson ? (
+            <div className="text-black py-2">
+              <p className="font-semibold">
+                {capitalizeWords(
+                  data.shopOrders.assignedDeliveryPerson.fullName,
+                )}{" "}
+                - {data.shopOrders.assignedDeliveryPerson.mobile}
+              </p>
+            </div>
+          ) : (
+            <div className="text-gray-500">
+              Waiting for delivery person to accept
+            </div>
+          )}
+        </div>
       )}
 
-      <div className="text-right font-bold text-black text-sm">
+      {/* <div className="text-right font-bold text-black text-sm">
         Total: LKR {data.shopOrders.subtotal}
+      </div> */}
+
+      <div className="text-right font-bold text-black text-sm">
+        <div className="text-xs text-gray-600 font-normal mb-1">
+          Subtotal: LKR {data.shopOrders.subtotal}
+        </div>
+
+        <div className="border-t border-gray-300 mt-2 pt-2">
+          Total: LKR {data.totalAmount || 0}
+        </div>
       </div>
     </div>
   );
