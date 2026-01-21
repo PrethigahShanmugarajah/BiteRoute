@@ -9,9 +9,24 @@ import userRouter from "./routes/userRoutes.js";
 import shopRouter from "./routes/shopRoutes.js";
 import itemRouter from "./routes/itemRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import http from "http";
+import { Server } from "socket.io";
+import { socketHandler } from "./socket.js";
 
 /* -------- INITIALIZE EXPRESS -------- */
 const app = express();
+const server = http.createServer(app);
+
+/* -------- SOCKET.IO -------- */
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    methods: ["POST", "GET", "PUT", "DELETE"],
+  },
+});
+
+app.set("io", io);
 
 /* -------- CONNECT TO DATABASE -------- */
 await connectDB();
@@ -23,7 +38,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-  })
+  }),
 );
 
 /* -------- ROUTES -------- */
@@ -34,9 +49,12 @@ app.use("/api/shop", shopRouter);
 app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);
 
+/* -------- SOCKET HANDLER -------- */
+socketHandler(io);
+
 /* -------- PORT -------- */
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
