@@ -1,6 +1,6 @@
 // BiteRoute / Client / src / components / Dashboards / DeliveryPerson.jsx
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Nav from "../Nav";
 import api from "../../api/axios";
 import API_ROUTES from "../../api/api_route";
@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../FormInputs";
 
 const DeliveryPerson = () => {
-  const { userData } = useSelector((state) => state.user);
+  const { userData, socket } = useSelector((state) => state.user);
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [currentOrder, setCurrentOrder] = useState();
   const [showOtpBox, setShowOtpBox] = useState(false);
@@ -33,7 +33,7 @@ const DeliveryPerson = () => {
     try {
       const { data } = await api.get(
         API_ROUTES.ORDER.ORDER_GET_DELIVERYPERSON_ASSIGNMENTS,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Fetch Assignments API Response:", data);
@@ -73,14 +73,12 @@ const DeliveryPerson = () => {
     }
   };
 
-  const handleSendOtp = (e) => {};
-
   const acceptOrder = async (assignmentId) => {
     try {
       const { data } = await api.post(
         API_ROUTES.ORDER.ORDER_ACCEPT(assignmentId),
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Accept Order API Response:", data);
@@ -107,7 +105,7 @@ const DeliveryPerson = () => {
       const { data } = await api.post(
         API_ROUTES.ORDER.ORDER_SEND_DELIVERY_OTP,
         { orderId: currentOrder._id, shopOrderId: currentOrder.shopOrder._id },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Send OTP API Response:", data);
@@ -136,7 +134,7 @@ const DeliveryPerson = () => {
           shopOrderId: currentOrder.shopOrder._id,
           otp: formData.otp,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Verify OTP API Response:", data);
@@ -153,6 +151,18 @@ const DeliveryPerson = () => {
       console.log("Verify OTP Error:", error);
     }
   };
+
+  useEffect(() => {
+    socket.on("newAssognment", (data) => {
+      if (data.sendTo == userData._id) {
+        setAvailableAssignments((prev) => [...prev, data]);
+      }
+    });
+
+    return () => {
+      socket?.off("newAssignment");
+    };
+  }, [socket]);
 
   useEffect(() => {
     getAssignments();
@@ -196,8 +206,24 @@ const DeliveryPerson = () => {
                         {a?.deliveryAddress.text}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {a?.items?.length} items | {a?.subtotal}
+                        {a?.items?.length} items
                       </p>
+
+                      <div className="mt-2 text-xs border-t border-gray-200 pt-2">
+                        <p className="text-gray-500">
+                          Subtotal:{" "}
+                          <span className="font-semibold">
+                            LKR {a?.subtotal}
+                          </span>
+                        </p>
+
+                        <p className="text-black font-bold">
+                          Total:{" "}
+                          <span className="text-primary">
+                            LKR {a?.totalAmount || 0}
+                          </span>
+                        </p>
+                      </div>
                     </div>
 
                     <Button
@@ -235,6 +261,22 @@ const DeliveryPerson = () => {
                 {currentOrder.shopOrder.shopOrderItems.length} items |{" "}
                 {currentOrder.shopOrder.subtotal}
               </p>
+
+              <div className="mt-2 text-xs border-t border-gray-200 pt-2">
+                <p className="text-gray-500">
+                  Subtotal:{" "}
+                  <span className="font-semibold">
+                    LKR {currentOrder?.shopOrder?.subtotal}
+                  </span>
+                </p>
+
+                <p className="text-black font-bold">
+                  Total:{" "}
+                  <span className="text-primary">
+                    LKR {currentOrder?.totalAmount || 0}
+                  </span>
+                </p>
+              </div>
             </div>
 
             <DeliveryPersonTracking data={currentOrder} />
