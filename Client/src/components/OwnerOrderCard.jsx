@@ -2,7 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectInput } from "./FormInputs";
-import { capitalizeFirstLetter, capitalizeWords } from "../utils/helper";
+import {
+  capitalizeAll,
+  capitalizeFirstLetter,
+  capitalizeWords,
+} from "../utils/helper";
 import { MdPhone } from "react-icons/md";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
@@ -37,7 +41,7 @@ const OwnerOrderCard = ({ data }) => {
       const data = await api.post(
         API_ROUTES.ORDER.ORDER_UPDATE_STATUS(orderId, shopId),
         { status },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Order Update Status API Response:", data.data);
@@ -74,6 +78,8 @@ const OwnerOrderCard = ({ data }) => {
     }
   }, [selectedStatus]);
 
+  console.log("Payment:", data);
+
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
       <div>
@@ -82,9 +88,23 @@ const OwnerOrderCard = ({ data }) => {
         </h2>
 
         <p className="text-sm text-gray-500">{data.user.email}</p>
+
         <p className="flex items-center gap-2 text-sm text-gray-500 mt-1">
           <MdPhone /> <span>{data.user.mobile}</span>
         </p>
+
+        {data.paymentMethod == "online" ? (
+          <p className="text-sm text-black font-semibold">
+            Payment:{" "}
+            <span className={data?.payment ? "text-green-500" : "text-red-500"}>
+              {capitalizeAll(data?.payment ? "true" : "false")}
+            </span>
+          </p>
+        ) : (
+          <p gap-2 text-sm text-gray-500>
+            Payment Method: {capitalizeAll(data.paymentMethod)}
+          </p>
+        )}
       </div>
 
       <div className="flex items-start gap-2 text-gray-500 text-sm">
