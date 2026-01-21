@@ -1,13 +1,36 @@
 // BiteRoute / Client / src / pages / MyOrders.jsx
+import { useEffect } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserOrderCard from "../components/UserOrderCard";
 import OwnerOrderCard from "../components/OwnerOrderCard";
+import { setMyOrders, updateRealtimeOrderStatus } from "../redux/userSlice";
 
 const MyOrders = () => {
-  const { userData, myOrders } = useSelector((state) => state.user);
+  const { userData, myOrders, socket } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket?.on("newOrder", (data) => {
+      if (data.shopOrder?.owner._id == userData._id) {
+        dispatch(setMyOrders([data, ...myOrders]));
+        console.log("My Orders:", setMyOrders([data, ...myOrders]));
+      }
+    });
+
+    socket?.on("update-status", ({ orderId, shopId, status, userId }) => {
+      if (userId == userData._id) {
+        dispatch(updateRealtimeOrderStatus({ orderId, shopId, status }));
+      }
+    });
+
+    return () => {
+      socket?.off("newOrder");
+      socket?.off("update-status");
+    };
+  }, [socket]);
 
   return (
     <div className="w-full min-h-screen bg-bg flex justify-center px-4">
