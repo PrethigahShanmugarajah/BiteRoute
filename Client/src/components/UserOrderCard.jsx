@@ -17,9 +17,21 @@ const UserOrderCard = ({ data }) => {
         </div>
 
         <div className="text-right">
-          <p className="text-sm text-gray-500">
-            {capitalizeAll(data.paymentMethod)}
-          </p>
+          {data.paymentMethod == "cod" ? (
+            <p className="text-sm text-gray-500">
+              {capitalizeAll(data?.paymentMethod)}
+            </p>
+          ) : (
+            <p className="text-sm text-black font-semibold">
+              Payment:{" "}
+              <span
+                className={data?.payment ? "text-green-500" : "text-red-500"}
+              >
+                {capitalizeAll(data?.payment ? "true" : "false")}
+              </span>
+            </p>
+          )}
+
           <p className="font-medium text-blue-600">
             {capitalizeWords(data.shopOrders?.[0].status)}
           </p>
