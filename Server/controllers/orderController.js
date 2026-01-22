@@ -60,10 +60,16 @@ export const placeOrder = async (req, res) => {
           0,
         );
 
+        // Calculate 5% delivery fee for this shop
+        const shopDeliveryFee = Math.round(subtotal * 0.05 * 100) / 100;
+        const shopTotal = subtotal + shopDeliveryFee;
+
         return {
           shop: shop._id,
           owner: shop.owner._id,
           subtotal,
+          deliveryFee: shopDeliveryFee,
+          total: shopTotal,
           shopOrderItems: items.map((i) => ({
             item: i.id,
             price: i.price,
@@ -84,7 +90,13 @@ export const placeOrder = async (req, res) => {
       0,
     );
 
-    const finalAmount = itemsTotal + Number(deliveryFee || 0);
+    // Calculate total delivery fees from all shops (5% of each shop's subtotal)
+    const totalDeliveryFees = shopOrders.reduce(
+      (sum, order) => sum + order.deliveryFee,
+      0,
+    );
+
+    const finalAmount = itemsTotal + totalDeliveryFees;
 
     if (paymentMethod == "online") {
       const razorOrder = await instance.orders.create({
@@ -110,6 +122,11 @@ export const placeOrder = async (req, res) => {
         message: "Order created successfully. Please complete the payment.",
         razorOrder,
         orderId: newOrder._id,
+        totalDeliveryFees,
+        shopDeliveryFees: shopOrders.map((order) => ({
+          shopId: order.shop,
+          deliveryFee: order.deliveryFee,
+        })),
       });
     }
 
@@ -151,9 +168,16 @@ export const placeOrder = async (req, res) => {
       });
     }
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Order placed successfully!", newOrder });
+    return res.status(201).json({
+      success: true,
+      message: "Order placed successfully!",
+      newOrder,
+      totalDeliveryFees,
+      shopDeliveryFees: shopOrders.map((order) => ({
+        shopId: order.shop,
+        deliveryFee: order.deliveryFee,
+      })),
+    });
   } catch (error) {
     console.error("Place Order Error:", error.message);
 
@@ -266,16 +290,21 @@ export const getMyOrders = async (req, res) => {
         .populate("shopOrders.shopOrderItems.item", "name image price")
         .populate("shopOrders.assignedDeliveryPerson", "fullName mobile");
 
-      const filteredOrders = orders.map((order) => ({
-        _id: order._id,
-        paymentMethod: order.paymentMethod,
-        user: order.user,
-        shopOrders: order.shopOrders.find((o) => o.owner._id == req.userId),
-        createdAt: order.createdAt,
-        deliveryAddress: order.deliveryAddress,
-        payment: order.payment,
-        totalAmount: order.totalAmount || 0,
-      }));
+      const filteredOrders = orders.map((order) => {
+        const shopOrder = order.shopOrders.find(
+          (o) => o.owner._id == req.userId,
+        );
+        return {
+          _id: order._id,
+          paymentMethod: order.paymentMethod,
+          user: order.user,
+          shopOrders: shopOrder,
+          createdAt: order.createdAt,
+          deliveryAddress: order.deliveryAddress,
+          payment: order.payment,
+          totalAmount: shopOrder?.total || 0,
+        };
+      });
 
       return res.status(200).json({
         success: true,
@@ -471,20 +500,22 @@ export const getDeliveryPersonAssignment = async (req, res) => {
       });
     }
 
-    const formated = assignments.map((a) => ({
-      assignmentId: a._id,
-      status: a.status,
-      orderId: a.order._id,
-      shopName: a.shop.name,
-      deliveryAddress: a.order.deliveryAddress,
-      items:
-        a.order.shopOrders.find((so) => so._id.equals(a.shopOrderId))
-          ?.shopOrderItems || [],
-      subtotal:
-        a.order.shopOrders.find((so) => so._id.equals(a.shopOrderId))
-          ?.subtotal || [],
-      totalAmount: a.order.totalAmount || 0,
-    }));
+    const formated = assignments.map((a) => {
+      const shopOrder = a.order.shopOrders.find((so) =>
+        so._id.equals(a.shopOrderId),
+      );
+      return {
+        assignmentId: a._id,
+        status: a.status,
+        orderId: a.order._id,
+        shopName: a.shop.name,
+        deliveryAddress: a.order.deliveryAddress,
+        items: shopOrder?.shopOrderItems || [],
+        subtotal: shopOrder?.subtotal || 0,
+        deliveryFee: shopOrder?.deliveryFee || 0,
+        totalAmount: shopOrder?.total || 0,
+      };
+    });
 
     return res.status(200).json({
       success: true,
@@ -628,7 +659,7 @@ export const getCurrentOrder = async (req, res) => {
       user: assignment.order.user,
       shopOrder,
       deliveryAddress: assignment.order.deliveryAddress,
-      totalAmount: assignment.order.totalAmount || 0,
+      totalAmount: shopOrder?.total || 0,
       deliveryPersonLocation,
       customerLocation,
     });
@@ -833,13 +864,11 @@ export const getTodayDeliveries = async (req, res) => {
 
     formattedStats.sort((a, b) => a.hour - b.hour);
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Today's deliveries fetched successfully!",
-        formattedStats,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Today's deliveries fetched successfully!",
+      formattedStats,
+    });
   } catch (error) {
     console.error("Get Today Deliveries Error:", error.message);
 
