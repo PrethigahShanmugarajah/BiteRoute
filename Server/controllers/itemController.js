@@ -75,7 +75,7 @@ export const updateItem = async (req, res) => {
         price,
         image,
       },
-      { new: true }
+      { new: true },
     );
 
     if (!item) {
@@ -294,6 +294,86 @@ export const searchItems = async (req, res) => {
       success: false,
       message: "Failed to search items",
       error: `Search Items Error: ${error.message}`,
+    });
+  }
+};
+
+/* -------- Add Rating -------- */
+export const addRating = async (req, res) => {
+  try {
+    const { itemId, rating } = req.body;
+
+    // if (!itemId || !rating) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Item Id and rating is required" });
+    // }
+
+    if (!itemId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Item Id is required" });
+    }
+
+    if (!rating) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Rating is required" });
+    }
+
+    // if (rating < 1 || rating > 5) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Rating must be between 1 to 5" });
+    // }
+
+    const numericRating = Number(rating);
+    if (isNaN(numericRating)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Rating must be a number" });
+    }
+
+    if (numericRating < 1) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Rating cannot be less than 1" });
+    }
+
+    if (numericRating > 5) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Rating cannot be greater than 5" });
+    }
+
+    const item = await Item.findById(itemId);
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found.",
+      });
+    }
+
+    const newCount = item.rating.count + 1;
+    const newAverage =
+      (item.rating.average * item.rating.count + rating) / newCount;
+
+    item.rating.count = newCount;
+    item.rating.average = newAverage;
+    await item.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Rating added successfully!",
+      rating: item.rating,
+    });
+  } catch (error) {
+    console.error("Add Rating Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add rating",
+      error: `Add Rating Error: ${error.message}`,
     });
   }
 };
