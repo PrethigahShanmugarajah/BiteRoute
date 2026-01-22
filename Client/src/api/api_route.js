@@ -34,6 +34,7 @@ const API_ROUTES = {
       `${BASE_URL}/api/item/get-item-by-shop/${shopId}`,
     ITEM_SEARCH: (query, city) =>
       `${BASE_URL}/api/item/search-items?query=${query}&city=${city}`,
+    ITEM_ADD_RATING: `${BASE_URL}/api/item/add-rating`,
   },
 
   ORDER: {
