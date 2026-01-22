@@ -51,6 +51,7 @@ const API_ROUTES = {
       `${BASE_URL}/api/order/get-order-by-id/${orderId}`,
     ORDER_SEND_DELIVERY_OTP: `${BASE_URL}/api/order/send-delivery-otp`,
     ORDER_VERIFY_DELIVERY_OTP: `${BASE_URL}/api/order/verify-delivery-otp`,
+    ORDER_GET_TODAY_DELIVERIES: `${BASE_URL}/api/order/get-today-deliveries`,
   },
 };
 
