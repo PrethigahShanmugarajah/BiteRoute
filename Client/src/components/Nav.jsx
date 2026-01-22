@@ -18,14 +18,13 @@ import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
   const { userData, currentCity, cartItems } = useSelector(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const { myShopData } = useSelector((state) => state.owner);
 
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  // const [query, setQuery] = useState(" ");
 
   const dispatch = useDispatch();
 
@@ -62,7 +61,7 @@ const Nav = () => {
     try {
       const { data } = await api.get(
         API_ROUTES.ITEM.ITEM_SEARCH(value, currentCity),
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Fetch Search Items API Response:", data);
@@ -203,9 +202,6 @@ const Nav = () => {
             >
               <TbReceipt2 size={20} />
               <span>My Orders</span>
-              <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-primary rounded-full px-1.5 py-px">
-                0
-              </span>
             </div>
 
             <div
@@ -263,8 +259,8 @@ const Nav = () => {
               userData?.role === "user"
                 ? "lg:right-[10%]"
                 : userData?.role === "owner"
-                ? "lg:right-[24%]"
-                : "lg:right-[30%]"
+                  ? "lg:right-[24%]"
+                  : "lg:right-[30%]"
             } w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 -mt-12`}
           >
             <div className="text-[17px]">
