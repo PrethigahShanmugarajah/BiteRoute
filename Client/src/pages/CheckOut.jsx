@@ -35,10 +35,16 @@ const CheckOut = () => {
 
   const [addressInput, setAddressInput] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [deliveryFee, setDeliveryFee] = useState(0);
 
   const apiKey = import.meta.env.VITE_GEOAPIKEY;
 
-  const deliveryFee = totalAmount > 500 ? 0 : 40;
+  // Calculate 5% delivery fee
+  useEffect(() => {
+    const calculatedDeliveryFee = Math.round(totalAmount * 0.05 * 100) / 100;
+    setDeliveryFee(calculatedDeliveryFee);
+  }, [totalAmount]);
+
   const AmountWithDeliveryFee = totalAmount + deliveryFee;
 
   const onDragEnd = (e) => {
@@ -101,16 +107,12 @@ const CheckOut = () => {
         API_ROUTES.ORDER.ORDER_PLACE,
         {
           paymentMethod,
-          deliveryFee,
           deliveryAddress: {
             text: addressInput,
             latitude: location.lat,
             longitude: location.lon,
           },
-          totalAmount: AmountWithDeliveryFee,
-          // cartItems,
           cartItems,
-          deliveryFee,
         },
         { withCredentials: true },
       );
