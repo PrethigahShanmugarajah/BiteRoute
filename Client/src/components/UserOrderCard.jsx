@@ -1,10 +1,43 @@
 // BiteRoute / Client / src / components / UserOrderCard.jsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { capitalizeAll, capitalizeWords, formatDate } from "../utils/helper";
 import Button from "./Button";
+import api from "../api/axios";
+import API_ROUTES from "../api/api_route";
+import { toast } from "react-toastify";
+import { FaStar } from "react-icons/fa";
 
 const UserOrderCard = ({ data }) => {
   const navigate = useNavigate();
+  const [selectedRating, setSelectedRating] = useState({});
+
+  const handleRating = async (itemId, rating) => {
+    try {
+      const { data } = await api.post(
+        API_ROUTES.ITEM.ITEM_ADD_RATING,
+        { itemId, rating },
+        {
+          withCredentials: true,
+        },
+      );
+
+      console.log("Add Rating API Response:", data);
+
+      if (data.success) {
+        toast.success(data.message);
+        console.log("Add Rating Success:", data.message);
+
+        setSelectedRating((prev) => ({ ...prev, [itemId]: rating }));
+      } else {
+        toast.warn(data.message);
+        console.log("Add Rating Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Add Rating Error:", error);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
@@ -67,6 +100,19 @@ const UserOrderCard = ({ data }) => {
                 <p className="text-xs text-gray-500">
                   Qty: {item.quantity}x LKR {item.price}
                 </p>
+
+                {shopOrder.status == "delivered" && (
+                  <div className="flex space-x-1 mt-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        className={`${selectedRating[item.item._id] >= star ? "text-yellow-400" : "text-gray-400"}`}
+                        onClick={() => handleRating(item.item._id, star)}
+                      >
+                        <FaStar />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
