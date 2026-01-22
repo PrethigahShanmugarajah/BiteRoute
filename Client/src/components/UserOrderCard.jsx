@@ -32,7 +32,13 @@ const UserOrderCard = ({ data }) => {
             </p>
           )}
 
-          <p className="font-medium text-blue-600">
+          <p
+            className={`font-medium ${
+              data.shopOrders?.[0].status?.toLowerCase() === "delivered"
+                ? "text-green-600"
+                : "text-blue-600"
+            }`}
+          >
             {capitalizeWords(data.shopOrders?.[0].status)}
           </p>
         </div>
@@ -67,7 +73,14 @@ const UserOrderCard = ({ data }) => {
 
           <div className="flex justify-between items-center border-t border-gray-300 pt-2">
             <p className="font-semibold">Subtotal: LKR {shopOrder.subtotal}</p>
-            <span className="text-sm font-medium text-blue-600">
+
+            <span
+              className={`text-sm font-medium ${
+                shopOrder.status.toLowerCase() === "delivered"
+                  ? "text-green-600"
+                  : "text-blue-600"
+              }`}
+            >
               {capitalizeWords(shopOrder.status)}
             </span>
           </div>
