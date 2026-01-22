@@ -2,11 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectInput } from "./FormInputs";
-import {
-  capitalizeAll,
-  capitalizeFirstLetter,
-  capitalizeWords,
-} from "../utils/helper";
+import { capitalizeAll, capitalizeWords } from "../utils/helper";
 import { MdPhone } from "react-icons/md";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
@@ -138,7 +134,13 @@ const OwnerOrderCard = ({ data }) => {
       <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-300">
         <span className="text-sm">
           Status:{" "}
-          <span className="font-semibold text-primary">
+          <span
+            className={`font-semibold ${
+              data.shopOrders.status?.toLowerCase() === "delivered"
+                ? "text-green-600"
+                : "text-primary"
+            }`}
+          >
             {capitalizeWords(data.shopOrders.status)}
           </span>
         </span>
@@ -151,30 +153,6 @@ const OwnerOrderCard = ({ data }) => {
           className="mb-0 w-48"
         />
       </div>
-
-      {/* {data.shopOrders.status == "out of delivery" && (
-        <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
-          {data.shopOrders.assignedDeliveryPerson ? (
-            <p>Assigned Delivery Person:</p>
-          ) : (
-            <p>Available Delivery Persons:</p>
-          )}
-          {availablePersons?.length > 0 ? (
-            availablePersons?.map((b, index) => {
-              <div className="text-gray-300">
-                {capitalizeFirstLetter(b.fullName)} - {b.mobile}
-              </div>;
-            })
-          ) : data.shopOrders.assignedDeliveryPerson ? (
-            <div>
-              {capitalizeWords(data.shopOrders.assignedDeliveryPerson.fullName)}{" "}
-              - {data.shopOrders.assignedDeliveryPerson.mobile}
-            </div>
-          ) : (
-            <div>Waiting for delivery person to accept</div>
-          )}
-        </div>
-      )} */}
 
       {data.shopOrders.status == "out of delivery" && (
         <div className="mt-3 p-2 border border-gray-300 rounded-lg text-sm bg-purple-50">
@@ -210,10 +188,6 @@ const OwnerOrderCard = ({ data }) => {
           )}
         </div>
       )}
-
-      {/* <div className="text-right font-bold text-black text-sm">
-        Total: LKR {data.shopOrders.subtotal}
-      </div> */}
 
       <div className="text-right font-bold text-black text-sm">
         <div className="text-xs text-gray-600 font-normal mb-1">
