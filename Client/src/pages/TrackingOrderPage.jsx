@@ -7,17 +7,20 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { capitalizeWords } from "../utils/helper";
 import DeliveryPersonTracking from "../components/DeliveryPersonTracking";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const TrackingOrderPage = () => {
   const { orderId } = useParams();
   const [currentOrder, setCurrentOrder] = useState();
   const navigate = useNavigate();
+  const { socket } = useSelector((state) => state.user);
+  const [liveLocations, setLiveLocations] = useState({});
 
   const handleGetOrder = async () => {
     try {
       const { data } = await api.get(
         API_ROUTES.ORDER.ORDER_GET_BY_ID(orderId),
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Fetch Order API Response:", data);
@@ -35,6 +38,18 @@ const TrackingOrderPage = () => {
       console.log("Fetch Order Error:", error);
     }
   };
+
+  useEffect(() => {
+    socket.on(
+      "updateDeliveryLocation",
+      ({ deliveryPersonId, latitude, longitude }) => {
+        setLiveLocations((prev) => ({
+          ...prev,
+          [deliveryPersonId]: { lat: latitude, lon: longitude },
+        }));
+      },
+    );
+  }, [socket]);
 
   useEffect(() => {
     handleGetOrder();
@@ -72,7 +87,7 @@ const TrackingOrderPage = () => {
             </p>
 
             <p className="mt-6">
-              <spa>Delivery address:</spa>
+              <span>Delivery address:</span>{" "}
               {currentOrder?.deliveryAddress?.text}
             </p>
           </div>
@@ -106,7 +121,9 @@ const TrackingOrderPage = () => {
               <div className="h-100 w-full rounded-2xl overflow-hidden shadow-md">
                 <DeliveryPersonTracking
                   data={{
-                    deliveryPersonLocation: {
+                    deliveryPersonLocation: liveLocations[
+                      shopOrder.assignedDeliveryPerson._id
+                    ] || {
                       lat: shopOrder?.assignedDeliveryPerson?.location
                         ?.coordinates[1],
                       lon: shopOrder?.assignedDeliveryPerson?.location
