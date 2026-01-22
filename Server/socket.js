@@ -1,4 +1,3 @@
-// BiteRoute / Server / socket.js
 import User from "./models/userModel.js";
 
 export const socketHandler = async (io) => {

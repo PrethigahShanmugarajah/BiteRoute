@@ -1,4 +1,3 @@
-// BiteRoute / Server / models / deliveryAssignmentModel.js
 import mongoose from "mongoose";
 
 const deliveryAssignmentSchema = new mongoose.Schema(
@@ -35,11 +34,11 @@ const deliveryAssignmentSchema = new mongoose.Schema(
     },
     acceptedAt: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const DeliveryAssignment = mongoose.model(
   "DeliveryAssignment",
-  deliveryAssignmentSchema
+  deliveryAssignmentSchema,
 );
 export default DeliveryAssignment;

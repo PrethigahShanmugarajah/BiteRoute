@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / DeletePopup.jsx
 import { MdClose } from "react-icons/md";
 import Button from "./Button";
 import { ClipLoader } from "react-spinners";

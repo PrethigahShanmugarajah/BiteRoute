@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / CreateEditShop.jsx
 import { useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +16,7 @@ const CreateEditShop = () => {
   const navigate = useNavigate();
   const { myShopData } = useSelector((state) => state.owner);
   const { currentCity, currentState, currentAddress } = useSelector(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const [frontendImage, setFrontendImage] = useState(myShopData?.image || null);
@@ -61,7 +60,7 @@ const CreateEditShop = () => {
       const response = await api.post(
         API_ROUTES.SHOP.SHOP_CREATE_EDIT,
         formData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const data = response.data;

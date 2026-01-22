@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / TrackingOrderPage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API_ROUTES from "../api/api_route";

@@ -1,4 +1,3 @@
-// BiteRoute / Server / middlewares / multer.js
 import multer from "multer";
 
 const storage = multer.diskStorage({

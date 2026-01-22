@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / Button.jsx
 const Button = ({
   text,
   children,

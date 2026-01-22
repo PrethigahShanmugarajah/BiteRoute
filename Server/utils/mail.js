@@ -1,17 +1,6 @@
-// BiteRoute / Server / utils / mail.js
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
-
-// const transporter = nodemailer.createTransport({
-//   host: "Gmail",
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: process.env.EMAIL,
-//     pass: process.env.PASS,
-//   },
-// });
 
 const transporter = nodemailer.createTransport({
   service: "gmail",

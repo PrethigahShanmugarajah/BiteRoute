@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / FoodCard.jsx
 import { useState } from "react";
 import {
   FaDrumstickBite,
@@ -26,7 +25,7 @@ const FoodCard = ({ data }) => {
           <FaStar className="text-yellow-500 text-lg" />
         ) : (
           <FaRegStar className="text-yellow-500 text-lg" />
-        )
+        ),
       );
     }
 
@@ -110,7 +109,7 @@ const FoodCard = ({ data }) => {
                         shop: data.shop,
                         quantity,
                         foodType: data.foodType,
-                      })
+                      }),
                     )
                   : null;
               }}

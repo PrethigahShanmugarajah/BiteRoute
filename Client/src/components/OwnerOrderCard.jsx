@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / OwnerOrderCard.jsx
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectInput } from "./FormInputs";

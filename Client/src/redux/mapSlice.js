@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / redux / mapSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const mapSlice = createSlice({

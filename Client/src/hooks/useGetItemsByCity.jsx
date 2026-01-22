@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / hooks / useGetItemsByCity.jsx
 import { useEffect } from "react";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";
@@ -19,7 +18,7 @@ function useGetItemsByCity() {
           API_ROUTES.ITEM.ITEM_GET_BY_CITY(currentCity),
           {
             withCredentials: true,
-          }
+          },
         );
 
         console.log("Fetch Item get by City API Response:", data);

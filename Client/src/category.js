@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / category.js
 import All from "./assets/All.png";
 import Breakfast from "./assets/Breakfast.png";
 import Lunch from "./assets/Lunch.png";

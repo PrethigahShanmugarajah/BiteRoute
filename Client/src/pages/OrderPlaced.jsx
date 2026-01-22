@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / OrderPlaced.jsx
 import { FaCircleCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";

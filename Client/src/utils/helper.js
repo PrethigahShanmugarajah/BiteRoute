@@ -1,5 +1,3 @@
-// BiteRoute / Client / src / utils / helper.js
-
 /* -------- Capitalize first letter -------- */
 export const capitalizeFirstLetter = (str) => {
   if (!str) return "";

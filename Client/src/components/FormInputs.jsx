@@ -1,4 +1,3 @@
-// Bite Route / Client / src / components / FormInputs.jsx
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 

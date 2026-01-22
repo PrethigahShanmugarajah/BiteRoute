@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / CheckOut.jsx
 import { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +38,6 @@ const CheckOut = () => {
 
   const apiKey = import.meta.env.VITE_GEOAPIKEY;
 
-  // Calculate 5% delivery fee
   useEffect(() => {
     const calculatedDeliveryFee = Math.round(totalAmount * 0.05 * 100) / 100;
     setDeliveryFee(calculatedDeliveryFee);

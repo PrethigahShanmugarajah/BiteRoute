@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / hooks / useGetCity.jsx
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../api/axios";
@@ -28,17 +27,17 @@ function useGetCity() {
       dispatch(setLocation({ lat: latitude, lon: longitude }));
 
       const { data } = await api.get(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${apiKey}`
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${apiKey}`,
       );
 
       console.log("Get City:", data);
 
       dispatch(
-        setCurrentCity(data?.results[0]?.city || data?.results[0]?.country)
+        setCurrentCity(data?.results[0]?.city || data?.results[0]?.country),
       );
       console.log(
         "Dispatch City:",
-        data?.results[0]?.city || data?.results[0]?.country
+        data?.results[0]?.city || data?.results[0]?.country,
       );
 
       dispatch(setCurrentState(data.results[0].state));
@@ -46,22 +45,22 @@ function useGetCity() {
 
       dispatch(
         setCurrentAddress(
-          data?.results[0]?.address_line2 || data?.results[0]?.address_line1
-        )
+          data?.results[0]?.address_line2 || data?.results[0]?.address_line1,
+        ),
       );
       console.log(
         "Dispatch Address:",
-        data?.results[0]?.address_line2 || data?.results[0]?.address_line1
+        data?.results[0]?.address_line2 || data?.results[0]?.address_line1,
       );
 
       dispatch(
         setAddress(
-          data?.results[0]?.address_line2 || data?.results[0]?.address_line1
-        )
+          data?.results[0]?.address_line2 || data?.results[0]?.address_line1,
+        ),
       );
       console.log(
         "Final Address:",
-        data?.results[0]?.address_line2 || data?.results[0]?.address_line1
+        data?.results[0]?.address_line2 || data?.results[0]?.address_line1,
       );
     });
   }, [userData]);

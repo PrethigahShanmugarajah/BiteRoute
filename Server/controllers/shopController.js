@@ -1,4 +1,3 @@
-// BiteRoute / Server / controllers / shopController.js
 import Shop from "../models/shopModel.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
@@ -46,7 +45,7 @@ export const createEditShop = async (req, res) => {
     console.error(
       `${isNewShop ? "Create Shop Error" : "Update Shop Error"}: ${
         error.message
-      }`
+      }`,
     );
 
     return res.status(500).json({

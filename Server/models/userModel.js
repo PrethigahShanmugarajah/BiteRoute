@@ -1,4 +1,3 @@
-// BiteRoute / Server / models / userModel.js
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(

@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / SignIn.jsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/FormInputs";
@@ -43,7 +42,7 @@ const SignIn = () => {
         {
           ...formData,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Signin API Response:", data);
@@ -79,7 +78,7 @@ const SignIn = () => {
         {
           email: googleData.user.email,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Google Auth Response:", data);

@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / Dashboards / DeliveryPerson.jsx
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Nav from "../Nav";

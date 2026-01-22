@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / CartItemCard.jsx
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { TbTrash } from "react-icons/tb";
 import { useDispatch } from "react-redux";

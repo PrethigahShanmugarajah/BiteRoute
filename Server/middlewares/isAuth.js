@@ -1,4 +1,3 @@
-// BiteRoute / Server / middlewares / isAuth.js
 import jwt from "jsonwebtoken";
 
 /*-------- Authentication middleware --------*/

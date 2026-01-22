@@ -1,4 +1,3 @@
-// BiteRoute / Server / controllers / orderController.js
 import DeliveryAssignment from "../models/deliveryAssignmentModel.js";
 import Order from "../models/orderModel.js";
 import Shop from "../models/shopModel.js";
@@ -17,7 +16,6 @@ var instance = new Razorpay({
 /* -------- Place Order -------- */
 export const placeOrder = async (req, res) => {
   try {
-    // const { cartItems, paymentMethod, deliveryAddress } = req.body;
     const { cartItems, paymentMethod, deliveryAddress, deliveryFee } = req.body;
 
     if (!cartItems || cartItems.length === 0) {
@@ -60,7 +58,6 @@ export const placeOrder = async (req, res) => {
           0,
         );
 
-        // Calculate 5% delivery fee for this shop
         const shopDeliveryFee = Math.round(subtotal * 0.05 * 100) / 100;
         const shopTotal = subtotal + shopDeliveryFee;
 
@@ -80,17 +77,11 @@ export const placeOrder = async (req, res) => {
       }),
     );
 
-    // const totalAmount = shopOrders.reduce(
-    //   (sum, order) => sum + order.subtotal,
-    //   0,
-    // );
-
     const itemsTotal = shopOrders.reduce(
       (sum, order) => sum + order.subtotal,
       0,
     );
 
-    // Calculate total delivery fees from all shops (5% of each shop's subtotal)
     const totalDeliveryFees = shopOrders.reduce(
       (sum, order) => sum + order.deliveryFee,
       0,
@@ -100,7 +91,6 @@ export const placeOrder = async (req, res) => {
 
     if (paymentMethod == "online") {
       const razorOrder = await instance.orders.create({
-        // amount: Math.round(totalAmount * 100),
         amount: Math.round(finalAmount * 100),
         currency: "INR",
         receipt: `receipt_${Date.now()}`,
@@ -110,7 +100,6 @@ export const placeOrder = async (req, res) => {
         user: req.userId,
         paymentMethod,
         deliveryAddress,
-        // totalAmount,
         totalAmount: finalAmount,
         shopOrders,
         razorpayOrderId: razorOrder.id,
@@ -134,7 +123,6 @@ export const placeOrder = async (req, res) => {
       user: req.userId,
       paymentMethod,
       deliveryAddress,
-      // totalAmount,
       totalAmount: finalAmount,
       deliveryFee: Number(deliveryFee || 0),
       shopOrders,
@@ -194,12 +182,6 @@ export const verifyPayment = async (req, res) => {
   try {
     const { razorpay_payment_id, orderId } = req.body;
     const payment = await instance.payments.fetch(razorpay_payment_id);
-
-    // if (!payment || payment.status != "captured") {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Payment not captured." });
-    // }
 
     if (!payment) {
       return res
@@ -631,13 +613,6 @@ export const getCurrentOrder = async (req, res) => {
     }
 
     let deliveryPersonLocation = { lat: null, lon: null };
-
-    // if (assignment.assignedTo?.location?.coordinates?.length === 2) {
-    //   deliveryPersonLocation.lat =
-    //     assignment.assignedTo.location.coordinates[1];
-    //   deliveryPersonLocation.lon =
-    //     assignment.assignedTo.location.coordinates[0];
-    // }
 
     if (assignment.assignedTo?.[0]?.location?.coordinates?.length === 2) {
       deliveryPersonLocation.lat =

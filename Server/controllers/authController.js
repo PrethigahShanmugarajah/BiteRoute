@@ -1,4 +1,3 @@
-// BiteRoute / Server / controllers / authController.js
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { genToken } from "../utils/token.js";
@@ -53,7 +52,6 @@ export const signUp = async (req, res) => {
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      password: user.password,
       mobile: user.mobile,
       role: user.role,
       createdAt: user.createdAt,
@@ -110,7 +108,6 @@ export const signIn = async (req, res) => {
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      password: user.password,
       mobile: user.mobile,
       role: user.role,
       createdAt: user.createdAt,
@@ -175,7 +172,7 @@ export const sendOtp = async (req, res) => {
 
     return res
       .status(200)
-      .json({ success: true, message: "OTP sent successfully!", otp });
+      .json({ success: true, message: "OTP sent successfully!" });
   } catch (error) {
     console.error("Send OTP Error:", error.message);
 
@@ -198,18 +195,6 @@ export const verifyOtp = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User does not exist." });
     }
-
-    // if (!user || user.resetOtp != otp || user.otpExpires < Date.now()) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Invalid or expired OTP." });
-    // }
-
-    // if (user.resetOtp !== otp.trim() || user.otpExpires < Date.now()) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Invalid or expired OTP." });
-    // }
 
     if (!user) {
       return res
@@ -259,7 +244,6 @@ export const resetPassword = async (req, res) => {
         .json({ success: false, message: "OTP verification required." });
     }
 
-    const oldPassword = user.password;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     user.isOtpVerified = false;
@@ -269,8 +253,6 @@ export const resetPassword = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Password reset successfully!",
-      oldPassword,
-      newPassword: hashedPassword,
     });
   } catch (error) {
     console.error("Reset Password Error:", error.message);
@@ -306,7 +288,6 @@ export const googleAuth = async (req, res) => {
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      password: user.password,
       mobile: user.mobile,
       role: user.role,
       createdAt: user.createdAt,

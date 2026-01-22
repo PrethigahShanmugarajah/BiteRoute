@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / ForgotPassword.jsx
 import { useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { Input } from "../components/FormInputs";
@@ -13,8 +12,6 @@ import { ClipLoader } from "react-spinners";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -40,7 +37,7 @@ const ForgotPassword = () => {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_SEND_OTP,
         { email: formData.email },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Send OTP API Response:", data);
@@ -67,7 +64,7 @@ const ForgotPassword = () => {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_VERIFY_OTP,
         { email: formData.email, otp: formData.otp },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Verify OTP API Response:", data);
@@ -99,7 +96,7 @@ const ForgotPassword = () => {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_RESET_PASSWORD,
         { email: formData.email, newPassword: formData.newPassword },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Reset Password API Response:", data);
@@ -138,23 +135,6 @@ const ForgotPassword = () => {
         {step == 1 && (
           /* -------- Email -------- */
           <div>
-            {/* <div className="mb-6">
-              <label
-                htmlFor="email"
-                className="block text-black font-medium mb-1"
-              >
-                Email
-              </label>
-
-              <input
-                type="email"
-                className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                placeholder="example@example.com"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
-            </div> */}
-
             <div>
               <Input
                 name="email"
@@ -166,14 +146,6 @@ const ForgotPassword = () => {
                 required
               />
             </div>
-
-            {/* <button
-              className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
-              onClick={handleSendOtp}
-              disabled={loading}
-            >
-              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Send Otp"}
-            </button> */}
 
             <Button
               className="w-full font-semibold"
@@ -188,23 +160,6 @@ const ForgotPassword = () => {
         {step == 2 && (
           /* -------- Email -------- */
           <div>
-            {/* <div className="mb-6">
-              <label
-                htmlFor="otp"
-                className="block text-black font-medium mb-1"
-              >
-                Otp
-              </label>
-
-              <input
-                type="text"
-                className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                placeholder="Enter your Otp"
-                onChange={(e) => setOtp(e.target.value)}
-                value={otp}
-              />
-            </div> */}
-
             <div>
               <Input
                 name="otp"
@@ -216,14 +171,6 @@ const ForgotPassword = () => {
                 required
               />
             </div>
-
-            {/* <button
-              className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
-              onClick={handleVerifyOtp}
-              disabled={loading}
-            >
-              {loading ? <ClipLoader size={20} color="#FFFFFF" /> : "Verify"}
-            </button> */}
 
             <Button
               className="w-full font-semibold"
@@ -238,36 +185,6 @@ const ForgotPassword = () => {
         {step == 3 && (
           /* -------- Password -------- */
           <div>
-            {/* <div className="mb-6">
-              <label
-                htmlFor="newPassword"
-                className="block text-black font-medium mb-1"
-              >
-                New Password
-              </label>
-
-              <div className="relative">
-                <input
-                  type={`${showNewPassword ? "text" : "password"}`}
-                  className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                  placeholder="New Password"
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  value={newPassword}
-                />
-
-                <button
-                  className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                  onClick={() => setShowNewPassword((prev) => !prev)}
-                >
-                  {!showNewPassword ? (
-                    <FaEye size={20} />
-                  ) : (
-                    <FaEyeSlash size={20} />
-                  )}
-                </button>
-              </div>
-            </div> */}
-
             <div>
               <div className="relative">
                 <Input
@@ -292,36 +209,6 @@ const ForgotPassword = () => {
                 </button>
               </div>
             </div>
-
-            {/* <div className="mb-6">
-              <label
-                htmlFor="confirmPassword"
-                className="block text-black font-medium mb-1"
-              >
-                Confirm Password
-              </label>
-
-              <div className="relative">
-                <input
-                  type={`${showConfirmPassword ? "text" : "password"}`}
-                  className="w-full border border-solid rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                  placeholder="Confirm Password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  value={confirmPassword}
-                />
-
-                <button
-                  className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                  onClick={() => setConfirmPassword((prev) => !prev)}
-                >
-                  {!showConfirmPassword ? (
-                    <FaEye size={20} />
-                  ) : (
-                    <FaEyeSlash size={20} />
-                  )}
-                </button>
-              </div>
-            </div> */}
 
             <div>
               <div className="relative">
@@ -348,18 +235,6 @@ const ForgotPassword = () => {
               </div>
             </div>
 
-            {/* <button
-              className="w-full font-semibold py-2 rounded-lg transition duration-200 bg-primary text-white hover:bg-hover"
-              onClick={handleResetPassword}
-              disabled={loading}
-            >
-              {loading ? (
-                <ClipLoader size={20} color="#FFFFFF" />
-              ) : (
-                "Reset Password"
-              )}
-            </button> */}
-
             <Button
               className="w-full font-semibold"
               onClick={() => handleSubmit(handleResetPassword)()}
@@ -370,7 +245,6 @@ const ForgotPassword = () => {
               ) : (
                 "Reset Password"
               )}
-              {/* Reset Password */}
             </Button>
           </div>
         )}

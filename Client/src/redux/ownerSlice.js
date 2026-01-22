@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / redux / ownerSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const ownerSlice = createSlice({

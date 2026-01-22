@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / Nav.jsx
 import { useEffect, useState } from "react";
 import { FaLocationDot, FaPlus } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";

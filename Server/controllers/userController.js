@@ -1,4 +1,3 @@
-// BiteRoute / Server / controllers / userController.js
 import User from "../models/userModel.js";
 
 /* -------- Get Current Logged-in User -------- */
@@ -62,7 +61,7 @@ export const updateUserLocation = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.userId,
       { location: { type: "Point", coordinates: [lon, lat] } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!user) {

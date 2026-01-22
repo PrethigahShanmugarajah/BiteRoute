@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / SignUp.jsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/FormInputs";
@@ -46,7 +45,7 @@ const SignUp = () => {
       const { data } = await api.post(
         API_ROUTES.AUTH.AUTH_SIGNUP,
         { ...formData, role },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Sign Up API Response:", data);
@@ -91,7 +90,7 @@ const SignUp = () => {
           role,
           mobile,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log("Google Auth Response:", data);

@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / hooks / useGetCurrentUser.jsx
 import { useEffect } from "react";
 import api from "../api/axios";
 import API_ROUTES from "../api/api_route";

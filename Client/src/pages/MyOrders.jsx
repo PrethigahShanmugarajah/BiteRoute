@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / MyOrders.jsx
 import { useEffect } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / UserOrderCard.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { capitalizeAll, capitalizeWords, formatDate } from "../utils/helper";

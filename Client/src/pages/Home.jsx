@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / Home.jsx
 import { useSelector } from "react-redux";
 import UserDashboard from "../components/Dashboards/UserDashboard";
 import OwnerDashboard from "../components/Dashboards/OwnerDashboard";

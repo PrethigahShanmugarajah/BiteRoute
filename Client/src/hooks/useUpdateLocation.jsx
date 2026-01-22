@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / hooks / useUpdateLocation.jsx
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import api from "../api/axios";
@@ -16,7 +15,7 @@ function useUpdateLocation() {
         const { data } = await api.post(
           API_ROUTES.USER.USER_UPDATE_LOCATION,
           { lat, lon },
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         console.log("Update Location API Response:", data);
@@ -32,10 +31,6 @@ function useUpdateLocation() {
         console.log("Update Location Error:", error);
       }
     };
-
-    // navigator.geolocation.watchPosition((pos) => {
-    //   updateLocation(pos.coords.latitude, pos.coords.longitude);
-    // });
 
     const watchId = navigator.geolocation.watchPosition((pos) => {
       updateLocation(pos.coords.latitude, pos.coords.longitude);

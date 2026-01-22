@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / DeliveryPersonTracking.jsx
 import DeliveryPerson from "../assets/DeliveryPerson.png";
 import Location from "../assets/Location.png";
 import "leaflet/dist/leaflet.css";

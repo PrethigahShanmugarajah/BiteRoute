@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / OwnerItemCard.jsx
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
@@ -88,7 +87,6 @@ const OwnerItemCard = ({ data }) => {
 
             <div
               className="p-2 rounded-full text-red-500 hover:bg-red-600/10 cursor-pointer"
-              // onClick={() => handleDeleteItem(data._id)}
               onClick={() => setShowDelete(true)}
             >
               <FaTrashAlt size={16} />

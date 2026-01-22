@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / redux / store.js
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
 import ownerSlice from "./ownerSlice";

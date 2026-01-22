@@ -1,4 +1,3 @@
-// BiteRoute / Server / utils / token.js
 import jwt from "jsonwebtoken";
 
 /* -------- Generate JWT Token -------- */

@@ -1,4 +1,3 @@
-// BiteRoute / Server / controllers / itemController.js
 import Item from "../models/itemModel.js";
 import Shop from "../models/shopModel.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
@@ -303,12 +302,6 @@ export const addRating = async (req, res) => {
   try {
     const { itemId, rating } = req.body;
 
-    // if (!itemId || !rating) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Item Id and rating is required" });
-    // }
-
     if (!itemId) {
       return res
         .status(400)
@@ -320,12 +313,6 @@ export const addRating = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Rating is required" });
     }
-
-    // if (rating < 1 || rating > 5) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Rating must be between 1 to 5" });
-    // }
 
     const numericRating = Number(rating);
     if (isNaN(numericRating)) {

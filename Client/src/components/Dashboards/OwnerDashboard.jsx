@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / Dashboards / OwnerDashboard.jsx
 import { useSelector } from "react-redux";
 import Nav from "../Nav";
 import { FaPen, FaUtensils } from "react-icons/fa6";

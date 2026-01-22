@@ -1,4 +1,3 @@
-// BiteRoute / Server / models / shopModel.js
 import mongoose from "mongoose";
 
 const shopSchema = new mongoose.Schema(
@@ -15,7 +14,7 @@ const shopSchema = new mongoose.Schema(
     address: { type: String, required: true },
     items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Shop = mongoose.model("Shop", shopSchema);

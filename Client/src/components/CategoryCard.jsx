@@ -1,5 +1,3 @@
-// BiteRoute / Client / src / components / CategoryCard.jsx
-
 const CategoryCard = ({ name, image, onClick, selected }) => {
   return (
     <div

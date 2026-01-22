@@ -1,4 +1,3 @@
-// BiteRoute / Server / models / orderModel.js
 import mongoose from "mongoose";
 
 const shopOrderItemsSchema = new mongoose.Schema(

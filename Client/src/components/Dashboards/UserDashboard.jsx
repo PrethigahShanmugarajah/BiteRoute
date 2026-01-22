@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / components / Dashboards / UserDashboard.jsx
 import { useEffect, useRef, useState } from "react";
 import { categories } from "../../category";
 import CategoryCard from "../CategoryCard";
@@ -48,7 +47,7 @@ const UserDashboard = () => {
       setLeftButton(element.scrollLeft > 0);
 
       setLeftRightButton(
-        element.scrollLeft + element.clientWidth < element.scrollWidth
+        element.scrollLeft + element.clientWidth < element.scrollWidth,
       );
     }
   };
@@ -67,19 +66,19 @@ const UserDashboard = () => {
       updateButton(
         cateScrollRef,
         setShowLeftCateButton,
-        setShowRightCateButton
+        setShowRightCateButton,
       );
       updateButton(
         shopScrollRef,
         setShowLeftShopButton,
-        setShowRightShopButton
+        setShowRightShopButton,
       );
 
       cateScrollRef.current.addEventListener("scroll", () => {
         updateButton(
           cateScrollRef,
           setShowLeftCateButton,
-          setShowRightCateButton
+          setShowRightCateButton,
         );
       });
 
@@ -87,7 +86,7 @@ const UserDashboard = () => {
         updateButton(
           shopScrollRef,
           setShowLeftShopButton,
-          setShowRightShopButton
+          setShowRightShopButton,
         );
       });
     }
@@ -97,7 +96,7 @@ const UserDashboard = () => {
         updateButton(
           cateScrollRef,
           setShowLeftCateButton,
-          setShowRightCateButton
+          setShowRightCateButton,
         );
       });
 
@@ -105,7 +104,7 @@ const UserDashboard = () => {
         updateButton(
           shopScrollRef,
           setShowLeftShopButton,
-          setShowRightShopButton
+          setShowRightShopButton,
         );
       });
     };

@@ -1,4 +1,3 @@
-// BiteRoute / Client / src / pages / UpdateItem.jsx
 import { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,7 +83,7 @@ const UpdateItem = () => {
         formData,
         {
           withCredentials: true,
-        }
+        },
       );
 
       const data = response.data;
