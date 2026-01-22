@@ -1,6 +1,6 @@
 // BiteRoute / Client / src / components / Dashboards / DeliveryPerson.jsx
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Nav from "../Nav";
 import api from "../../api/axios";
 import API_ROUTES from "../../api/api_route";
@@ -17,7 +17,34 @@ const DeliveryPerson = () => {
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [currentOrder, setCurrentOrder] = useState();
   const [showOtpBox, setShowOtpBox] = useState(false);
-  // const [otp, setOtp] = useState("");
+  const [deliveryPersonLocation, setDeliveryPersonLocation] = useState(null);
+
+  useEffect(() => {
+    if (!socket || userData.role !== "deliveryPerson") return;
+
+    let watchId;
+
+    if (navigator.geolocation) {
+      ((watchId = navigator.geolocation.watchPosition((position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        setDeliveryPersonLocation({ lat: latitude, lon: longitude });
+        socket.emit("updateLocation", {
+          latitude,
+          longitude,
+          userId: userData._id,
+        });
+      })),
+        (error) => {
+          console.log(":", error);
+        },
+        { enableHighAccuracy: true });
+    }
+
+    return () => {
+      if (watchId) navigator.geolocation.clearWatch(watchId);
+    };
+  }, [socket, userData]);
 
   const {
     control,
@@ -180,9 +207,9 @@ const DeliveryPerson = () => {
 
           <p className="text-gray-500">
             <span className="font-semibold text-black">Latitude:</span>
-            {userData?.location?.coordinates[1]},{" "}
+            {deliveryPersonLocation?.lat},{" "}
             <span className="font-semibold text-black">Longitude:</span>
-            {userData?.location?.coordinates[0]}
+            {deliveryPersonLocation?.lon}
           </p>
         </div>
 
@@ -279,7 +306,19 @@ const DeliveryPerson = () => {
               </div>
             </div>
 
-            <DeliveryPersonTracking data={currentOrder} />
+            <DeliveryPersonTracking
+              data={{
+                deliveryPersonLocation: deliveryPersonLocation || {
+                  lat: userData.location?.coordinates[1],
+                  lon: userData.location?.coordinates[0],
+                },
+
+                customerLocation: {
+                  lat: currentOrder?.deliveryAddress?.latitude,
+                  lon: currentOrder?.deliveryAddress?.longitude,
+                },
+              }}
+            />
 
             {!showOtpBox ? (
               <Button
