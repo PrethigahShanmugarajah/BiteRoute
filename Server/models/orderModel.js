@@ -26,6 +26,14 @@ const shopOrderSchema = new mongoose.Schema(
       ref: "User",
     },
     subtotal: Number,
+    deliveryFee: {
+      type: Number,
+      default: 0,
+    },
+    total: {
+      type: Number,
+      default: 0,
+    },
     shopOrderItems: [shopOrderItemsSchema],
     status: {
       type: String,
