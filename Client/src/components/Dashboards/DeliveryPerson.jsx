@@ -18,6 +18,7 @@ const DeliveryPerson = () => {
   const [currentOrder, setCurrentOrder] = useState();
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [deliveryPersonLocation, setDeliveryPersonLocation] = useState(null);
+  const [todayDeliveries, setTodayDeliveries] = useState([]);
 
   useEffect(() => {
     if (!socket || userData.role !== "deliveryPerson") return;
@@ -179,6 +180,28 @@ const DeliveryPerson = () => {
     }
   };
 
+  const handleTodayDeliveries = async () => {
+    try {
+      const { data } = await api.get(
+        API_ROUTES.ORDER.ORDER_GET_TODAY_DELIVERIES,
+        { withCredentials: true },
+      );
+
+      console.log("Get Today Deliveries API Response:", data);
+
+      if (data.success) {
+        console.log("Get Today Deliveries Success:", data.message);
+        setTodayDeliveries(data);
+      } else {
+        toast.error(data.message);
+        console.log("Get Today Deliveries Data Error:", data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message);
+      console.log("Get Today Deliveries Error:", error);
+    }
+  };
+
   useEffect(() => {
     socket.on("newAssognment", (data) => {
       if (data.sendTo == userData._id) {
@@ -194,6 +217,7 @@ const DeliveryPerson = () => {
   useEffect(() => {
     getAssignments();
     getCurrentOrder();
+    handleTodayDeliveries();
   }, [userData]);
 
   return (
