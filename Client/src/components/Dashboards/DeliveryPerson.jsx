@@ -11,6 +11,16 @@ import DeliveryPersonTracking from "../DeliveryPersonTracking";
 import { FiPackage } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { Input } from "../FormInputs";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { ClipLoader } from "react-spinners";
 
 const DeliveryPerson = () => {
   const { userData, socket } = useSelector((state) => state.user);
@@ -19,6 +29,8 @@ const DeliveryPerson = () => {
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [deliveryPersonLocation, setDeliveryPersonLocation] = useState(null);
   const [todayDeliveries, setTodayDeliveries] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!socket || userData.role !== "deliveryPerson") return;
@@ -46,6 +58,12 @@ const DeliveryPerson = () => {
       if (watchId) navigator.geolocation.clearWatch(watchId);
     };
   }, [socket, userData]);
+
+  const ratePerDelivery = 50;
+  const totalEaring = todayDeliveries?.reduce(
+    (sum, d) => sum + d.count * ratePerDelivery,
+    0,
+  );
 
   const {
     control,
@@ -127,6 +145,8 @@ const DeliveryPerson = () => {
   };
 
   const sendOtp = async () => {
+    setLoading(true);
+
     console.log("Sending OTP for order:", currentOrder);
 
     try {
@@ -143,17 +163,22 @@ const DeliveryPerson = () => {
         console.log("Send OTP Success:", data.message);
 
         setShowOtpBox(true);
+        setLoading(false);
       } else {
         toast.error(data.message);
         console.log("Send OTP Data Error:", data.message);
+        setLoading(false);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error?.message);
       console.log("Send OTP Error:", error);
+      setLoading(false);
     }
   };
 
   const verifyOtp = async (formData) => {
+    setMessage("");
+
     try {
       const { data } = await api.post(
         API_ROUTES.ORDER.ORDER_VERIFY_DELIVERY_OTP,
@@ -170,6 +195,9 @@ const DeliveryPerson = () => {
       if (data.success) {
         toast.success(data.message);
         console.log("Verify OTP Success:", data.message);
+
+        setMessage(data.message);
+        location.reload();
       } else {
         toast.error(data.message);
         console.log("Verify OTP Data Error:", data.message);
@@ -191,7 +219,7 @@ const DeliveryPerson = () => {
 
       if (data.success) {
         console.log("Get Today Deliveries Success:", data.message);
-        setTodayDeliveries(data);
+        setTodayDeliveries(data.formattedStats || []);
       } else {
         toast.error(data.message);
         console.log("Get Today Deliveries Data Error:", data.message);
@@ -235,6 +263,35 @@ const DeliveryPerson = () => {
             <span className="font-semibold text-black">Longitude:</span>
             {deliveryPersonLocation?.lon}
           </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-5 w-[90%] mb-6 border border-gray-300">
+          <h1 className="text-lg font-bold mb-3 text-primary">
+            Today Deliveries
+          </h1>
+
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={todayDeliveries}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="hour" tickFormatter={(h) => `${h}:00`} />
+              <YAxis dataKey="count" allowDecimals={false} />
+              <Tooltip
+                formatter={(value) => [value, "orders"]}
+                labelFormatter={(label) => `${label}:00`}
+              />
+              <Bar dataKey="count" fill="#5b21b6" />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <div className="max-w-sm mx-auto mt-6 p-6 bg-white rounded-2xl shadow-lg text-center">
+            <h1 className="text-xl font-semibold text-black mb-2">
+              Today's Earning
+            </h1>
+
+            <span className="text-3xl font-bold text-green-600">
+              LKR {totalEaring}
+            </span>
+          </div>
         </div>
 
         {!currentOrder && (
@@ -349,8 +406,13 @@ const DeliveryPerson = () => {
                 className="mt-4 w-full bg-green-500 text-white  hover:bg-green-600"
                 variant="custom"
                 onClick={sendOtp}
+                disabled={loading}
               >
-                Mark As Delivered
+                {loading ? (
+                  <ClipLoader size={20} color="#FFFFFF" />
+                ) : (
+                  "Mark As Delivered"
+                )}
               </Button>
             ) : (
               <div className="mt-4 p-4 border border-gray-300 rounded-xl">
@@ -370,6 +432,10 @@ const DeliveryPerson = () => {
                   required
                   errors={errors}
                 />
+
+                {message && (
+                  <p className="text-center text-green-400">{message}</p>
+                )}
 
                 <Button className="w-full" onClick={handleSubmit(verifyOtp)}>
                   Submit OTP
