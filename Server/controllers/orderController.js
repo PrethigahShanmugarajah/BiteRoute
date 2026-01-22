@@ -790,3 +790,63 @@ export const verifyDeliveryOtp = async (req, res) => {
     });
   }
 };
+
+/* -------- Get Today Deliveries -------- */
+export const getTodayDeliveries = async (req, res) => {
+  try {
+    const deliveryPersonId = req.userId;
+    const startsOfDay = new Date();
+    startsOfDay.setHours(0, 0, 0, 0);
+
+    const orders = await Order.find({
+      "shopOrders.assignedDeliveryPerson": deliveryPersonId,
+      "shopOrders.status": "delivered",
+      "shopOrders.deliveredAt": { $gte: startsOfDay },
+    }).lean();
+
+    let todayDeliveries = [];
+
+    orders.forEach((order) => {
+      order.shopOrders.forEach((shopOrder) => {
+        if (
+          shopOrder.assignedDeliveryPerson == deliveryPersonId &&
+          shopOrder.status == "delivered" &&
+          shopOrder.deliveredAt &&
+          shopOrder.deliveredAt >= startsOfDay
+        ) {
+          todayDeliveries.push(shopOrder);
+        }
+      });
+    });
+
+    let stats = {};
+
+    todayDeliveries.forEach((shopOrder) => {
+      const hour = new Date(shopOrder.deliveredAt).getHours();
+      stats[hour] = (stats[hour] || 0) + 1;
+    });
+
+    let formattedStats = Object.keys(stats).map((hour) => ({
+      hour: parseInt(hour),
+      count: stats[hour],
+    }));
+
+    formattedStats.sort((a, b) => a.hour - b.hour);
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Today's deliveries fetched successfully!",
+        formattedStats,
+      });
+  } catch (error) {
+    console.error("Get Today Deliveries Error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch today deliveries",
+      error: `Get Today Deliveries Error: ${error.message}`,
+    });
+  }
+};
